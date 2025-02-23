@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Text>Welcome to HoneyHop</Text>
       <StatusBar style="auto" />
+      <TouchableOpacity><Text>Login</Text></TouchableOpacity>
+      <TouchableOpacity><Text>Sign Up</Text></TouchableOpacity>
     </View>
   );
 }
