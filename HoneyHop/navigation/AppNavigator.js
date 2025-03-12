@@ -4,6 +4,7 @@ import App from '../App';
 import Login from '../screens/Login';
 import SignUp from '../screens/SignUp';
 
+
 const Stack = createStackNavigator();
 
 function AppNavigator() {
