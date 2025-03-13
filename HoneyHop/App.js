@@ -7,23 +7,22 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-export default function App() {
-  const[user, setUser] = useState(null);
+// Import screens
+import Home from './src/screens/Home';
+import Login from './src/screens/Login';
+import SignUp from './src/screens/SignUp';
 
-  useEffect(() => {
-    onAuthStateChanged(firebase_auth, (user) => {
-      if (user) { console.log("user", user.email); }
-      setUser(user);
-    });
-  }, []);
-  
+export default function App() {
+  const Stack = createStackNavigator();
+
   return (
-    <View style={styles.container}>
-      <Text>Welcome to HoneyHop</Text>
-      <StatusBar style="auto" />
-      <TouchableOpacity><Text>Login</Text></TouchableOpacity>
-      <TouchableOpacity><Text>Sign Up</Text></TouchableOpacity>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={Home}/>
+        <Stack.Screen name="Login" component={Login}/>
+        <Stack.Screen name="SignUp" component={SignUp}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
