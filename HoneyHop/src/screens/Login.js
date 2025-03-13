@@ -1,7 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
 import GlobalStyles from '../../styles/GlobalStyles';
+import { useState } from 'react';
 
 export default function Login({navigation}) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <View style = {GlobalStyles.container}>
       <Text style = {GlobalStyles.text}>Username</Text>
