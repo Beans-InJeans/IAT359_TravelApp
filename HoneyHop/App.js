@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
-import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
+import { firebase_auth } from "./src/firebaseConfig";
 
 export default function App() {
   const[user, setUser] = useState(null);
