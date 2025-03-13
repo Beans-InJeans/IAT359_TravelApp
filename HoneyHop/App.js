@@ -13,6 +13,15 @@ import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 
 export default function App() {
+  const[user, setUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(firebase_auth, (user) => {
+      if (user) { console.log("user", user.email); }
+      setUser(user);
+    });
+  }, []);  
+
   const Stack = createStackNavigator();
 
   return (

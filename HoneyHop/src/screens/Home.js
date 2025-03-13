@@ -1,12 +1,4 @@
 export default function Home() {
-  const[user, setUser] = useState(null);
-
-  useEffect(() => {
-    onAuthStateChanged(firebase_auth, (user) => {
-      if (user) { console.log("user", user.email); }
-      setUser(user);
-    });
-  }, []);
   
   return (
     <View style={styles.container}>
