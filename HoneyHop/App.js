@@ -3,6 +3,9 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { firebase_auth } from "./src/firebaseConfig";
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 export default function App() {
   const[user, setUser] = useState(null);
