@@ -1,6 +1,10 @@
 import { StyleSheet } from "react-native";
 
 const GlobalStyles = StyleSheet.create({
+  header: {
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",

@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <View style={GlobalStyles.container}>
-      <Text>Welcome to HoneyHop</Text>
+      <Text style={GlobalStyles.header}>Welcome to HoneyHop</Text>
       <StatusBar style="auto" />
       <TouchableOpacity 
         style={GlobalStyles.button}
