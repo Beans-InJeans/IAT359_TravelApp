@@ -4,6 +4,12 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebase_auth } from "../firebaseConfig";
 
 export default function SignUp() {
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
+
     return(
         <View>
             <Text>Sign Up</Text>
