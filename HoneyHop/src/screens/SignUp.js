@@ -15,7 +15,7 @@ export default function SignUp({ navigation }) {
         try {
             await createUserWithEmailAndPassword(firebase_auth, email, password);
             console.log("User created successfully.");
-            navigation.navigate("List");
+            navigation.navigate("Login");
         } catch (error) {
             console.error(error.message);
         }
