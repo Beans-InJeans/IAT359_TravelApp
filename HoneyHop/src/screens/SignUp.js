@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebase_auth } from "../firebaseConfig";
 
-export default function SignUp() {
+export default function SignUp({ navigation }) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -14,6 +14,7 @@ export default function SignUp() {
         try {
             await createUserWithEmailAndPassword(firebase_auth, email, password);
             console.log("User created successfully.");
+            navigation.navigate("List");
         } catch (error) {
             console.error(error.message);
         }
@@ -46,7 +47,11 @@ export default function SignUp() {
                 // onChangeText={onChangeText}
                 value={password}
                 placeholder='Password'
+                secureTextEntry
             />
+            <TouchableOpacity onPress={handleSignUp}>
+                <Text>Sign Up</Text>
+            </TouchableOpacity>
         </View>
     );
 }
