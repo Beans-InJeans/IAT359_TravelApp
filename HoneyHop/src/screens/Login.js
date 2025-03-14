@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebase_auth } from '../firebaseConfig';
 
 export default function Login({navigation}) {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
@@ -20,12 +20,12 @@ export default function Login({navigation}) {
 
   return (
     <View style = {GlobalStyles.container}>
-      <Text style = {GlobalStyles.text}>Username</Text>
+      <Text style = {GlobalStyles.text}>Email</Text>
       <TextInput  
           style={GlobalStyles.input} 
-          placeholder='Enter username'
-          onChangeText={text => setUsername(text)}    
-          value={username}
+          placeholder='Enter email'
+          onChangeText={text => setEmail(text)}    
+          value={email}
       />
       <Text style={GlobalStyles.text}>Password</Text>
       <TextInput  
