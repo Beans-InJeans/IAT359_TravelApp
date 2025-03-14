@@ -28,3 +28,5 @@ const GlobalStyles = StyleSheet.create({
     fontSize: 20,
   },
 });
+
+export default GlobalStyles;
