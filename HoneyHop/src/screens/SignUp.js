@@ -24,27 +24,27 @@ export default function SignUp({ navigation }) {
         <View>
             <Text>Sign Up</Text>
             <TextInput
-                // onChangeText={onChangeText}
+                onChangeText={text => setFirstname(text)}    
                 value={firstname}
                 placeholder='First Name'
             />
             <TextInput
-                // onChangeText={onChangeText}
+                onChangeText={text => setLastname(text)}
                 value={lastname}
                 placeholder='Last Name'
             />
             <TextInput
-                // onChangeText={onChangeText}
+                onChangeText={text => setEmail(text)}
                 value={email}
                 placeholder='Email'
             />
             <TextInput
-                // onChangeText={onChangeText}
+                onChangeText={text => setUsername(text)}
                 value={username}
                 placeholder='Username'
             />
             <TextInput
-                // onChangeText={onChangeText}
+                onChangeText={text => setPassword(text)}
                 value={password}
                 placeholder='Password'
                 secureTextEntry
