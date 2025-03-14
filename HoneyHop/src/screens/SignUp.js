@@ -10,6 +10,15 @@ export default function SignUp() {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
 
+    const handleSignUp = async() => {
+        try {
+            await createUserWithEmailAndPassword(firebase_auth, email, password);
+            console.log("User created successfully.");
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
     return(
         <View>
             <Text>Sign Up</Text>
