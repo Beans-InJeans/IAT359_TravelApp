@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Touchable } from 'react-native';
 import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { db } from '../firebaseConfig';
@@ -109,8 +109,12 @@ export default function Timeline({navigation}) {
             )}
           </View>
         </View>
-
       </ScrollView>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Map')}>
+        <Text>Map</Text>
+      </TouchableOpacity>
+
       {/* Floating Action Button */}
       <TouchableOpacity
       style={styles.fab}
