@@ -3,19 +3,9 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-nati
 import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { db } from '../firebaseConfig';
-import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, addDoc, onSnapshot } from "firebase/firestore";
 
 export default function Timeline({navigation}) {
-  // const route = useRoute();
-  // const tripData = route.params?.tripData;
-
-  // if (!tripData) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text>No trip data available</Text>
-  //     </View>
-  //   );
-  // }
   const route = useRoute();
   const [tripData, setTripData] = useState([]);
   
@@ -49,6 +39,36 @@ export default function Timeline({navigation}) {
       </View>
     );
   }
+  
+  // const [tripData, setTripData] = useState([]);
+
+  // // Fetch trips from Firestore when the component mounts
+  // useEffect(() => {
+  //   fetchTripData();
+  // }, []);
+
+  // // Fetch trip data from Firestore
+  // async function fetchTripData() {
+  //   try {
+  //     const querySnapshot = await getDocs(collection(db, "trips"));
+  //     const trips = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     setTripData(trips); // Store the fetched trips
+  //     console.log("Fetch from Firestore successful:", trips); // Log successful fetch
+  //   } catch (error) {
+  //     console.error("Error fetching trips:", error);
+  //   }
+  // }
+
+  // if (tripData.length === 0) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <Text>No trips available</Text>
+  //     </View>
+  //   );
+  // }
 
   // Extract accommodation data (if exists)
   const accommodations = tripData.accommodations || [];

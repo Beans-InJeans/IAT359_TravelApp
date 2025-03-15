@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   View, Text, Keyboard, TouchableOpacity, 
   KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, StyleSheet 
@@ -90,7 +90,7 @@ const saveTrip = async () => {
   // Save trip details (store in state or local storage if needed)
   console.log(tripDetails);
 
-  // Navigate to the Timeline screen with trip data
+  // // Navigate to the Timeline screen with trip data
   navigation.navigate('Timeline', { tripData: tripDetails });
 };
 
@@ -340,6 +340,13 @@ const saveTrip = async () => {
         style={styles.saveButton}
 >
          Save Trip
+        </PaperButton>
+        <PaperButton 
+             mode="contained" 
+             onPress={() => navigation.navigate('Timeline')} 
+        style={styles.saveButton}
+>
+         See Itinerary
         </PaperButton>
         </ScrollView>
       </KeyboardAvoidingView>
