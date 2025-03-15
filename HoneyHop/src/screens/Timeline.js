@@ -123,8 +123,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    left: '50%',
-    marginLeft: -20,
     zIndex: 2,  // Make sure the icon stays on top of the line
   },
   flight: {
