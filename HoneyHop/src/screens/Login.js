@@ -1,61 +1,54 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import GlobalStyles from '../../styles/GlobalStyles';
 import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebase_auth } from '../firebaseConfig';
 import * as LocalAuthentication from 'expo-local-authentication';
 
-// const Login = ({ navigation }) => {
-//   const [isBiometricAvailable, setIsBiometricAvailable] = useState(false);
-
-//   useEffect(() => {
-//     checkBiometricSupport();
-//   }, []);
-// }
-
-export default function Login({navigation}) {
+const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async () => {  
     try {
       await signInWithEmailAndPassword(firebase_auth, email, password);
       console.log("Logged in successfully.");
       navigation.navigate("List");
-    } catch {
+    } catch (error) {
       console.error(error.message);
+      Alert.alert("Login failed", "Invalid email or password.");
     }
-  }
-
+  };
+  
   return (
-    <View style = {GlobalStyles.container}>
-      <Text style = {GlobalStyles.text}>Email</Text>
-      <TextInput  
-          style={GlobalStyles.input} 
-          placeholder='Enter email'
-          onChangeText={text => setEmail(text)}    
-          value={email}
+    <KeyboardAvoidingView 
+      style={GlobalStyles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <Text style={GlobalStyles.text}>Email</Text>
+      <TextInput
+        style={GlobalStyles.input}
+        placeholder='Enter email'
+        onChangeText={text => setEmail(text)}
+        value={email}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <Text style={GlobalStyles.text}>Password</Text>
-      <TextInput  
-          style={GlobalStyles.input} 
-          placeholder='Enter password'
-          onChangeText={text => setPassword(text)}    
-          value={password}
+      <TextInput
+        style={GlobalStyles.input}
+        placeholder='Enter password'
+        onChangeText={text => setPassword(text)}
+        value={password}
+        secureTextEntry
       />
       <TouchableOpacity
         style={GlobalStyles.button}
         onPress={handleLogin}>
         <Text style={GlobalStyles.buttonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={GlobalStyles.button}
-        onPress={() => navigation.navigate('Home')}>
-        <Text style={GlobalStyles.buttonText}>Login with FaceID</Text>
-      </TouchableOpacity>
-    </View>
-  );  
-}
+    </KeyboardAvoidingView>
+  );
+};
 
-const styles = StyleSheet.create({          // Add this 
-});
+export default Login;
