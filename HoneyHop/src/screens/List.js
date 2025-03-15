@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { 
   View, Text, Keyboard, TouchableOpacity, 
-  KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback 
+  KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, StyleSheet 
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput as PaperInput, Button as PaperButton, List } from 'react-native-paper';
-import GlobalStyles from '../../styles/GlobalStyles';
 
 export default function TripPlanner() {
   const [tripName, setTripName] = useState('');
@@ -56,11 +55,11 @@ export default function TripPlanner() {
     <TouchableWithoutFeedback onPress={closePickers}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
-        style={{ flex: 1, backgroundColor: '#FAFAFA', padding: 20 }}
+        style={styles.container}
       >
         <ScrollView keyboardShouldPersistTaps="handled">
           {/* Header Title */}
-          <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333', marginBottom: 20 }}>Plan Your Trip</Text>
+          <Text style={styles.header}>Plan Your Trip</Text>
 
           {/* Trip Name Input */}
           <PaperInput
@@ -68,14 +67,14 @@ export default function TripPlanner() {
             value={tripName}
             onChangeText={setTripName}
             mode="outlined"
-            style={{ marginBottom: 15 }}
+            style={styles.inputField}
           />
 
           {/* Date Range Picker */}
-          <Text style={{ fontSize: 16, fontWeight: '600', color: '#666', marginBottom: 5 }}>Select Date Range:</Text>
+          <Text style={styles.label}>Select Date Range:</Text>
 
           {/* Start Date */}
-          <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={GlobalStyles.dateInput}>
+          <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.dateInput}>
             <Text>Start Date: {startDate.toDateString()}</Text>
           </TouchableOpacity>
 
@@ -92,7 +91,7 @@ export default function TripPlanner() {
           )}
 
           {/* End Date */}
-          <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={GlobalStyles.dateInput}>
+          <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.dateInput}>
             <Text>End Date: {endDate.toDateString()}</Text>
           </TouchableOpacity>
 
@@ -113,10 +112,10 @@ export default function TripPlanner() {
             title="Flight Details"
             expanded={expandedFlight}
             onPress={() => setExpandedFlight(!expandedFlight)}
-            style={{ backgroundColor: 'white', marginVertical: 10 }}
+            style={styles.accordion}
           >
             {/* Departure Date */}
-            <TouchableOpacity onPress={() => setShowDepartureDatePicker(true)} style={GlobalStyles.dateInput}>
+            <TouchableOpacity onPress={() => setShowDepartureDatePicker(true)} style={styles.dateInput}>
               <Text>Departure Date: {departureDate.toDateString()}</Text>
             </TouchableOpacity>
 
@@ -133,7 +132,7 @@ export default function TripPlanner() {
             )}
 
             {/* Departure Time */}
-            <TouchableOpacity onPress={() => setShowDepartureTimePicker(true)} style={GlobalStyles.dateInput}>
+            <TouchableOpacity onPress={() => setShowDepartureTimePicker(true)} style={styles.dateInput}>
               <Text>Departure Time: {departureTime.toLocaleTimeString()}</Text>
             </TouchableOpacity>
 
@@ -155,7 +154,7 @@ export default function TripPlanner() {
               value={airline}
               onChangeText={setAirline}
               mode="outlined"
-              style={{ marginTop: 10 }}
+              style={styles.inputField}
             />
 
             {/* From Airport */}
@@ -164,7 +163,7 @@ export default function TripPlanner() {
               value={fromAirport}
               onChangeText={setFromAirport}
               mode="outlined"
-              style={{ marginTop: 10 }}
+              style={styles.inputField}
             />
 
             {/* To Airport */}
@@ -173,7 +172,7 @@ export default function TripPlanner() {
               value={toAirport}
               onChangeText={setToAirport}
               mode="outlined"
-              style={{ marginTop: 10 }}
+              style={styles.inputField}
             />
 
             {/* Flight Number */}
@@ -182,7 +181,7 @@ export default function TripPlanner() {
               value={flightNumber}
               onChangeText={setFlightNumber}
               mode="outlined"
-              style={{ marginTop: 10 }}
+              style={styles.inputField}
             />
 
             {/* Confirmation Number */}
@@ -191,7 +190,7 @@ export default function TripPlanner() {
               value={confirmationNumber}
               onChangeText={setConfirmationNumber}
               mode="outlined"
-              style={{ marginTop: 10 }}
+              style={styles.inputField}
             />
 
             {/* Terminal */}
@@ -200,7 +199,7 @@ export default function TripPlanner() {
               value={terminal}
               onChangeText={setTerminal}
               mode="outlined"
-              style={{ marginTop: 10, marginBottom: 10 }}
+              style={styles.inputField}
             />
           </List.Accordion>
 
@@ -209,19 +208,12 @@ export default function TripPlanner() {
             title="Accommodation Details"
             expanded={expandedAccommodation}
             onPress={() => setExpandedAccommodation(!expandedAccommodation)}
-            style={{ backgroundColor: 'white', marginVertical: 10 }}
+            style={styles.accordion}
           >
-            {/* Accommodation Name */}
-            <PaperInput
-              label="Accommodation Name"
-              value={accommodationName}
-              onChangeText={setAccommodationName}
-              mode="outlined"
-              style={{ marginTop: 10 }}
-            />
+    
 
             {/* Check-In Date */}
-            <TouchableOpacity onPress={() => setShowCheckInDatePicker(true)} style={GlobalStyles.dateInput}>
+            <TouchableOpacity onPress={() => setShowCheckInDatePicker(true)} style={styles.dateInput}>
               <Text>Check-In Date: {checkInDate.toDateString()}</Text>
             </TouchableOpacity>
 
@@ -238,7 +230,7 @@ export default function TripPlanner() {
             )}
 
             {/* Check-In Time */}
-            <TouchableOpacity onPress={() => setShowCheckInTimePicker(true)} style={GlobalStyles.dateInput}>
+            <TouchableOpacity onPress={() => setShowCheckInTimePicker(true)} style={styles.dateInput}>
               <Text>Check-In Time: {checkInTime.toLocaleTimeString()}</Text>
             </TouchableOpacity>
 
@@ -255,7 +247,7 @@ export default function TripPlanner() {
             )}
 
             {/* Check-Out Date */}
-            <TouchableOpacity onPress={() => setShowCheckOutDatePicker(true)} style={GlobalStyles.dateInput}>
+            <TouchableOpacity onPress={() => setShowCheckOutDatePicker(true)} style={styles.dateInput}>
               <Text>Check-Out Date: {checkOutDate.toDateString()}</Text>
             </TouchableOpacity>
 
@@ -271,21 +263,39 @@ export default function TripPlanner() {
               />
             )}
 
+            {/* Accommodation Name */}
+            <PaperInput
+              label="Accommodation Name"
+              value={accommodationName}
+              onChangeText={setAccommodationName}
+              mode="outlined"
+              style={styles.inputField}
+            />
+
             {/* Confirmation Number */}
             <PaperInput
               label="Confirmation Number"
               value={confirmationAccommodationNumber}
               onChangeText={setConfirmationAccommodationNumber}
               mode="outlined"
-              style={{ marginTop: 10, marginBottom: 10 }}
+              style={styles.inputField}
             />
           </List.Accordion>
+
+          {/* Add Plans Button */}
+          <PaperButton 
+            mode="outlined" 
+            onPress={() => console.log("Add Plan pressed")}
+            style={styles.addPlanButton}
+          >
+            Add Plans
+          </PaperButton>
 
           {/* Save Button */}
           <PaperButton 
             mode="contained" 
             onPress={() => console.log({ tripName, startDate, endDate, departureDate, departureTime, airline, fromAirport, toAirport, flightNumber, confirmationNumber, terminal, accommodationName, checkInDate, checkInTime, checkOutDate, confirmationAccommodationNumber })} 
-            style={{ marginTop: 20, padding: 8 }}
+            style={styles.saveButton}
           >
             Save Trip
           </PaperButton>
@@ -294,3 +304,47 @@ export default function TripPlanner() {
     </TouchableWithoutFeedback>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FAFAFA',
+    padding: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+    marginBottom: 5,
+  },
+  inputField: {
+    marginBottom: 15,
+  },
+  dateInput: {
+    padding: 10,
+    backgroundColor: 'white',
+    marginBottom: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  accordion: {
+    backgroundColor: 'white',
+    marginVertical: 10,
+  },
+  addPlanButton: {
+    marginTop: 20,
+    padding: 8,
+    marginBottom: 10,
+  },
+  saveButton: {
+    marginTop: 20,
+    padding: 8,
+  },
+});
