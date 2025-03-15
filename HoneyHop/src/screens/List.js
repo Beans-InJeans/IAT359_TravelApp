@@ -42,8 +42,8 @@ export default function TripPlanner() {
   const [showCheckOutDatePicker, setShowCheckOutDatePicker] = useState(false);
   const [confirmationAccommodationNumber, setConfirmationAccommodationNumber] = useState('');
 
-  // Itinerary Section
-  const [itinerary, setItinerary] = useState('');
+  // // Itinerary Section
+  // const [itinerary, setItinerary] = useState('');
   
 
   const closePickers = () => {
@@ -76,7 +76,7 @@ const saveTrip = () => {
     checkInTime,
     checkOutDate,
     confirmationAccommodationNumber,
-    itinerary
+    //itinerary
   };
 
   // Save trip details (store in state or local storage if needed)
@@ -320,18 +320,7 @@ const saveTrip = () => {
             </List.Accordion>
           </View>
 
-          {/* Itinerary Section */}
-          <View style={styles.card}>
-            <Text style={styles.cardHeader}>Itinerary</Text>
-            {/* Add Plans Button */}
-            <PaperButton 
-              mode="outlined" 
-              onPress={() => console.log("Add Plan pressed")}
-              style={styles.addPlanButton}
-            >
-              Add Plans
-            </PaperButton>
-          </View>
+  
 
           {/* Save Trip Button */}
           <PaperButton 

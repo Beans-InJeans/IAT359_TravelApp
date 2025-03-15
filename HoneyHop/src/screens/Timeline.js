@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { useRoute } from '@react-navigation/native';  // Used to access the passed tripData
-import { MaterialCommunityIcons } from '@expo/vector-icons';  // Icon library
+import { useRoute } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Timeline() {
-  const route = useRoute();  // Access the route params
+  const route = useRoute();
   const tripData = route.params?.tripData;
 
   if (!tripData) {
@@ -15,12 +15,11 @@ export default function Timeline() {
     );
   }
 
-  // Function to format events chronologically and display a vertical timeline
   const events = [
     {
       title: 'Departure Flight',
       date: tripData.departureDate ? new Date(tripData.departureDate) : null,
-      time: tripData.departureTime ? new Date(tripData.departureTime) : null, // Ensure valid Date
+      time: tripData.departureTime ? new Date(tripData.departureTime) : null,
       description: `${tripData.airline} from ${tripData.fromAirport} to ${tripData.toAirport}`,
       type: 'flight',
     },
@@ -28,6 +27,12 @@ export default function Timeline() {
       title: 'Hotel Check-in',
       date: tripData.hotelCheckIn ? new Date(tripData.hotelCheckIn) : null,
       description: tripData.hotelName ? `Check-in at ${tripData.hotelName}` : null,
+      type: 'hotel',
+    },
+    {
+      title: 'Hotel Check-out',
+      date: tripData.hotelCheckOut ? new Date(tripData.hotelCheckOut) : null,
+      description: `Leaving ${tripData.hotelName}`,
       type: 'hotel',
     },
     {
@@ -40,40 +45,37 @@ export default function Timeline() {
 
   return (
     <View style={styles.container}>
-      {/* Trip Name */}
       <Text style={styles.title}>{tripData.tripName}</Text>
-
-      {/* Date Range */}
       <Text style={styles.dateRange}>
-        {tripData.startDate ? tripData.startDate.toDateString() : ''} - {tripData.endDate ? tripData.endDate.toDateString() : ''}
+        {tripData.startDate ? new Date(tripData.startDate).toDateString() : ''} - {tripData.endDate ? new Date(tripData.endDate).toDateString() : ''}
       </Text>
 
-      {/* Timeline Section */}
       <ScrollView style={styles.timeline}>
         <View style={styles.timelineContainer}>
           {events.map((event, index) => {
-            // Skip rendering event if no valid date or description
             if (!event.date && !event.description) return null;
 
             return (
               <View key={index} style={styles.timelineEvent}>
                 <View style={[styles.timelineIconContainer, styles[event.type]]}>
                   <MaterialCommunityIcons
-                    name={event.type === 'flight' ? 'airplane-takeoff' : event.type === 'hotel' ? 'home-city' : 'map'}
+                    name={
+                      event.type === 'flight' ? 'airplane-takeoff' :
+                      event.type === 'hotel' ? 'bed' :
+                      'map'
+                    }
                     size={24}
                     color="white"
                   />
                 </View>
                 <View style={styles.eventContent}>
                   <Text style={styles.eventTitle}>{event.title}</Text>
-                  {/* Only render date and time if valid */}
                   {event.date && (
                     <Text style={styles.eventDate}>
                       {event.date.toDateString()}
                       {event.time && ` at ${event.time.toLocaleTimeString()}`}
                     </Text>
                   )}
-                  {/* Only render description if valid */}
                   {event.description && (
                     <Text style={styles.eventDescription}>{event.description}</Text>
                   )}
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
   timelineEvent: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 40,  // Space for each event
+    marginBottom: 40,
   },
   timelineIconContainer: {
     width: 40,
@@ -123,19 +125,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    zIndex: 2,  // Make sure the icon stays on top of the line
+    zIndex: 2,
   },
   flight: {
     backgroundColor: '#3498db',
   },
   hotel: {
-    backgroundColor: '#2ecc71',
+    backgroundColor: '#9b59b6',
   },
   activity: {
     backgroundColor: '#f39c12',
   },
   eventContent: {
-    marginLeft: 50, // To leave space for the vertical line and icon
+    marginLeft: 50,
     paddingLeft: 10,
     borderLeftWidth: 2,
     borderLeftColor: '#ddd',
