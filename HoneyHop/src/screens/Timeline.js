@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -56,7 +56,7 @@ export default function Timeline() {
         <View style={styles.timelineEvent}>
           <View style={[styles.timelineIconContainer, styles.hotelCheckIn]}>
             <MaterialCommunityIcons
-              name="airplane-takeoff"
+              name="bed"
               size={24}
               color="white"
             />
@@ -78,6 +78,10 @@ export default function Timeline() {
         </View>
 
       </ScrollView>
+      {/* Floating Action Button */}
+      <TouchableOpacity style={styles.fab} onPress={() => console.log('Add plan clicked')}>
+        <MaterialCommunityIcons name="plus" size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -145,5 +149,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#444',
     marginTop: 5,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: '#3498db',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
 });
