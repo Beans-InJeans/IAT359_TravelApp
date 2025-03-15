@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 
-export default function Plan() {
+export default function Plan({navigate}) {
   const navigation = useNavigation();
 
   // State for inputs
@@ -37,7 +37,9 @@ export default function Plan() {
     console.log(planDetails);
 
     // Navigate to the Timeline screen with the plan data
-    navigation.navigate("Timeline", { planData: planDetails });
+    //navigation.navigate("Timeline", { planData: planDetails });
+    //navigation.goBack();
+    //navigation.navigate("Timeline", { planData: planDetails });
   };
 
   return (
@@ -110,12 +112,15 @@ export default function Plan() {
           {/* Save Plan Button */}
           <PaperButton
             mode="contained"
-            onPress={savePlan}
-            style={styles.saveButton}
-          >
-            Save Plan
-            <MaterialCommunityIcons name="check" size={20} color="white" />
-          </PaperButton>
+           onPress={() => {
+         // Call the savePlan function
+           savePlan();
+  }}
+  style={styles.saveButton}
+>
+  Save Plan
+</PaperButton>
+
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

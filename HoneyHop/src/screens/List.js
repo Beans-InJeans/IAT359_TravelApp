@@ -6,6 +6,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput as PaperInput, Button as PaperButton, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { db } from '../firebaseConfig';
 
 export default function TripPlanner() {
    const navigation = useNavigation(); 
