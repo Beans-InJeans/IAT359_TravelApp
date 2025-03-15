@@ -24,7 +24,7 @@
     "react-native-geocoding": "^0.5.0",
     "react-native-gesture-handler": "^2.24.0",
     "react-native-ionicons": "^4.6.5",
-    "react-native-maps": "^1.20.1",
+    "react-native-maps": "1.18.0",
     "react-native-paper": "^5.13.1",
     "react-native-reanimated": "^3.17.1",
     "react-native-safe-area-context": "^5.3.0",
