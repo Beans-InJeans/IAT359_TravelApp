@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { 
-  View, Text, TextInput, Button, TouchableOpacity, Keyboard, 
-  TouchableWithoutFeedback, KeyboardAvoidingView, Platform, ScrollView 
+  View, Text, Keyboard, TouchableOpacity, 
+  KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback 
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { TextInput as PaperInput, Button as PaperButton } from 'react-native-paper';
 import GlobalStyles from '../../styles/GlobalStyles';
 
 export default function List() {
@@ -15,76 +16,112 @@ export default function List() {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
-  const onStartDateChange = (event, selectedDate) => {
+  const closePickers = () => {
     setShowStartDatePicker(false);
-    if (selectedDate) setStartDate(selectedDate);
+    setShowEndDatePicker(false);
+    Keyboard.dismiss();
+  };
+
+  const onStartDateChange = (event, selectedDate) => {
+    if (selectedDate) {
+      setStartDate(selectedDate);
+    }
+    setShowStartDatePicker(false); // Close picker automatically
   };
 
   const onEndDateChange = (event, selectedDate) => {
-    setShowEndDatePicker(false);
-    if (selectedDate) setEndDate(selectedDate);
+    if (selectedDate) {
+      setEndDate(selectedDate);
+    }
+    setShowEndDatePicker(false); // Close picker automatically
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={closePickers}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: '#FAFAFA', padding: 20 }}
       >
-        <ScrollView contentContainerStyle={GlobalStyles.container}>
-          <Text style={GlobalStyles.header}>Plan Your Trip</Text>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          {/* Header Title */}
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333', marginBottom: 20 }}>Plan Your Trip</Text>
 
           {/* Trip Name Input */}
-          <Text style={GlobalStyles.label}>Enter Trip Name:</Text>
-          <TextInput
-            style={GlobalStyles.input}
-            placeholder="Trip Name"
+          <PaperInput
+            label="Enter Trip Name"
             value={tripName}
             onChangeText={setTripName}
-            returnKeyType="done"
+            mode="outlined"
+            style={{ marginBottom: 15 }}
           />
 
           {/* Date Range Picker */}
-          <Text style={GlobalStyles.label}>Select Date Range:</Text>
+          <Text style={{ fontSize: 16, fontWeight: '600', color: '#666', marginBottom: 5 }}>Select Date Range:</Text>
 
-          <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
-            <Text style={GlobalStyles.dateInput}>Start Date: {startDate.toDateString()}</Text>
+          {/* Start Date Picker */}
+          <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={GlobalStyles.dateInput}>
+            <Text>Start Date: {startDate.toDateString()}</Text>
           </TouchableOpacity>
 
           {showStartDatePicker && (
-            <DateTimePicker value={startDate} mode="date" display="default" onChange={onStartDateChange} />
+            <TouchableWithoutFeedback onPress={closePickers}>
+              <View>
+                <DateTimePicker 
+                  value={startDate} 
+                  mode="date" 
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'} 
+                  onChange={onStartDateChange} 
+                />
+              </View>
+            </TouchableWithoutFeedback>
           )}
 
-          <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
-            <Text style={GlobalStyles.dateInput}>End Date: {endDate.toDateString()}</Text>
+          {/* End Date Picker */}
+          <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={GlobalStyles.dateInput}>
+            <Text>End Date: {endDate.toDateString()}</Text>
           </TouchableOpacity>
 
           {showEndDatePicker && (
-            <DateTimePicker value={endDate} mode="date" display="default" onChange={onEndDateChange} />
+            <TouchableWithoutFeedback onPress={closePickers}>
+              <View>
+                <DateTimePicker 
+                  value={endDate} 
+                  mode="date" 
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'} 
+                  onChange={onEndDateChange} 
+                />
+              </View>
+            </TouchableWithoutFeedback>
           )}
 
           {/* Flight Details Input */}
-          <Text style={GlobalStyles.label}>Flight Details:</Text>
-          <TextInput
-            style={GlobalStyles.input}
-            placeholder="Enter flight details"
+          <PaperInput
+            label="Flight Details"
             value={flightDetails}
             onChangeText={setFlightDetails}
+            mode="outlined"
             multiline
+            style={{ marginTop: 15 }}
           />
 
           {/* Accommodation Details Input */}
-          <Text style={GlobalStyles.label}>Accommodation Details:</Text>
-          <TextInput
-            style={GlobalStyles.input}
-            placeholder="Enter accommodation details"
+          <PaperInput
+            label="Accommodation Details"
             value={accommodation}
             onChangeText={setAccommodation}
+            mode="outlined"
             multiline
+            style={{ marginTop: 15 }}
           />
 
-          {/* Submit Button */}
-          <Button title="Save Trip" onPress={() => console.log({ tripName, startDate, endDate, flightDetails, accommodation })} />
+          {/* Save Button */}
+          <PaperButton 
+            mode="contained" 
+            onPress={() => console.log({ tripName, startDate, endDate, flightDetails, accommodation })} 
+            style={{ marginTop: 20, padding: 8 }}
+          >
+            Save Trip
+          </PaperButton>
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
