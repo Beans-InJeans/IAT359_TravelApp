@@ -4,7 +4,15 @@ import { useRoute } from '@react-navigation/native';  // Used to access the pass
 
 export default function Timeline() {
   const route = useRoute();  // Access the route params
-  const { tripData } = route.params;  // Extract trip data
+  const tripData = route.params?.tripData;
+
+  if (!tripData) {
+    return (
+      <View style={styles.container}>
+        <Text>No trip data available</Text>
+      </View>
+    );
+  }
 
   // Function to format events chronologically and display a vertical timeline
   const events = [

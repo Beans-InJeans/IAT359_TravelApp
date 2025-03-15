@@ -9,9 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function TripPlanner() {
    const navigation = useNavigation(); 
-   
+
   const [tripName, setTripName] = useState('');
-  const [accommodation, setAccommodation] = useState('');
   
   // Date Pickers
   const [startDate, setStartDate] = useState(new Date());
@@ -58,28 +57,34 @@ export default function TripPlanner() {
     Keyboard.dismiss();
   };
 
-  const saveTrip = () => {
-    const tripDetails = {
-      tripName,
-      startDate,
-      endDate,
-      departureDate,
-      departureTime,
-      airline,
-      fromAirport,
-      toAirport,
-      flightNumber,
-      confirmationNumber,
-      terminal,
-      accommodationName,
-      checkInDate,
-      checkInTime,
-      checkOutDate,
-      confirmationAccommodationNumber,
-      itinerary
-    };
-
+  // Save trip function
+const saveTrip = () => {
+  const tripDetails = {
+    tripName,
+    startDate,
+    endDate,
+    departureDate,
+    departureTime,
+    airline,
+    fromAirport,
+    toAirport,
+    flightNumber,
+    confirmationNumber,
+    terminal,
+    accommodationName,
+    checkInDate,
+    checkInTime,
+    checkOutDate,
+    confirmationAccommodationNumber,
+    itinerary
   };
+
+  // Save trip details (store in state or local storage if needed)
+  console.log(tripDetails);
+
+  // Navigate to the Timeline screen with trip data
+  navigation.navigate('Timeline', { tripData: tripDetails });
+};
 
   return (
     <TouchableWithoutFeedback onPress={closePickers}>
