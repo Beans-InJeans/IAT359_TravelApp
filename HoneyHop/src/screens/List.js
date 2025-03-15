@@ -40,6 +40,9 @@ export default function TripPlanner() {
   const [showCheckOutDatePicker, setShowCheckOutDatePicker] = useState(false);
   const [confirmationAccommodationNumber, setConfirmationAccommodationNumber] = useState('');
 
+  // Itinerary Section
+  const [itinerary, setItinerary] = useState('');
+
   const closePickers = () => {
     setShowStartDatePicker(false);
     setShowEndDatePicker(false);
@@ -61,240 +64,247 @@ export default function TripPlanner() {
           {/* Header Title */}
           <Text style={styles.header}>Plan Your Trip</Text>
 
-          {/* Trip Name Input */}
-          <PaperInput
-            label="Enter Trip Name"
-            value={tripName}
-            onChangeText={setTripName}
-            mode="outlined"
-            style={styles.inputField}
-          />
+          {/* Details Section */}
+          <View style={styles.card}>
+            <Text style={styles.cardHeader}>Details</Text>
 
-          {/* Date Range Picker */}
-          <Text style={styles.label}>Select Date Range:</Text>
-
-          {/* Start Date */}
-          <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.dateInput}>
-            <Text>Start Date: {startDate.toDateString()}</Text>
-          </TouchableOpacity>
-
-          {showStartDatePicker && (
-            <DateTimePicker 
-              value={startDate} 
-              mode="date" 
-              display="default" 
-              onChange={(event, selectedDate) => {
-                if (selectedDate) setStartDate(selectedDate);
-                setShowStartDatePicker(false);
-              }} 
+            {/* Trip Name Input */}
+            <PaperInput
+              label="Enter Trip Name"
+              value={tripName}
+              onChangeText={setTripName}
+              mode="outlined"
+              style={styles.inputField}
             />
-          )}
 
-          {/* End Date */}
-          <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.dateInput}>
-            <Text>End Date: {endDate.toDateString()}</Text>
-          </TouchableOpacity>
+            {/* Date Range Picker */}
+            <Text style={styles.label}>Select Date Range:</Text>
 
-          {showEndDatePicker && (
-            <DateTimePicker 
-              value={endDate} 
-              mode="date" 
-              display="default" 
-              onChange={(event, selectedDate) => {
-                if (selectedDate) setEndDate(selectedDate);
-                setShowEndDatePicker(false);
-              }} 
-            />
-          )}
-
-          {/* Flight Details Dropdown Section */}
-          <List.Accordion
-            title="Flight Details"
-            expanded={expandedFlight}
-            onPress={() => setExpandedFlight(!expandedFlight)}
-            style={styles.accordion}
-          >
-            {/* Departure Date */}
-            <TouchableOpacity onPress={() => setShowDepartureDatePicker(true)} style={styles.dateInput}>
-              <Text>Departure Date: {departureDate.toDateString()}</Text>
+            {/* Start Date */}
+            <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.dateInput}>
+              <Text>Start Date: {startDate.toDateString()}</Text>
             </TouchableOpacity>
 
-            {showDepartureDatePicker && (
+            {showStartDatePicker && (
               <DateTimePicker 
-                value={departureDate} 
+                value={startDate} 
                 mode="date" 
                 display="default" 
                 onChange={(event, selectedDate) => {
-                  if (selectedDate) setDepartureDate(selectedDate);
-                  setShowDepartureDatePicker(false);
+                  if (selectedDate) setStartDate(selectedDate);
+                  setShowStartDatePicker(false);
                 }} 
               />
             )}
 
-            {/* Departure Time */}
-            <TouchableOpacity onPress={() => setShowDepartureTimePicker(true)} style={styles.dateInput}>
-              <Text>Departure Time: {departureTime.toLocaleTimeString()}</Text>
+            {/* End Date */}
+            <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.dateInput}>
+              <Text>End Date: {endDate.toDateString()}</Text>
             </TouchableOpacity>
 
-            {showDepartureTimePicker && (
+            {showEndDatePicker && (
               <DateTimePicker 
-                value={departureTime} 
-                mode="time" 
-                display="default" 
-                onChange={(event, selectedTime) => {
-                  if (selectedTime) setDepartureTime(selectedTime);
-                  setShowDepartureTimePicker(false);
-                }} 
-              />
-            )}
-
-            {/* Airline */}
-            <PaperInput
-              label="Airline"
-              value={airline}
-              onChangeText={setAirline}
-              mode="outlined"
-              style={styles.inputField}
-            />
-
-            {/* From Airport */}
-            <PaperInput
-              label="From Airport"
-              value={fromAirport}
-              onChangeText={setFromAirport}
-              mode="outlined"
-              style={styles.inputField}
-            />
-
-            {/* To Airport */}
-            <PaperInput
-              label="To Airport"
-              value={toAirport}
-              onChangeText={setToAirport}
-              mode="outlined"
-              style={styles.inputField}
-            />
-
-            {/* Flight Number */}
-            <PaperInput
-              label="Flight Number"
-              value={flightNumber}
-              onChangeText={setFlightNumber}
-              mode="outlined"
-              style={styles.inputField}
-            />
-
-            {/* Confirmation Number */}
-            <PaperInput
-              label="Confirmation Number"
-              value={confirmationNumber}
-              onChangeText={setConfirmationNumber}
-              mode="outlined"
-              style={styles.inputField}
-            />
-
-            {/* Terminal */}
-            <PaperInput
-              label="Terminal"
-              value={terminal}
-              onChangeText={setTerminal}
-              mode="outlined"
-              style={styles.inputField}
-            />
-          </List.Accordion>
-
-          {/* Accommodation Details Dropdown Section */}
-          <List.Accordion
-            title="Accommodation Details"
-            expanded={expandedAccommodation}
-            onPress={() => setExpandedAccommodation(!expandedAccommodation)}
-            style={styles.accordion}
-          >
-    
-
-            {/* Check-In Date */}
-            <TouchableOpacity onPress={() => setShowCheckInDatePicker(true)} style={styles.dateInput}>
-              <Text>Check-In Date: {checkInDate.toDateString()}</Text>
-            </TouchableOpacity>
-
-            {showCheckInDatePicker && (
-              <DateTimePicker 
-                value={checkInDate} 
+                value={endDate} 
                 mode="date" 
                 display="default" 
                 onChange={(event, selectedDate) => {
-                  if (selectedDate) setCheckInDate(selectedDate);
-                  setShowCheckInDatePicker(false);
+                  if (selectedDate) setEndDate(selectedDate);
+                  setShowEndDatePicker(false);
                 }} 
               />
             )}
 
-            {/* Check-In Time */}
-            <TouchableOpacity onPress={() => setShowCheckInTimePicker(true)} style={styles.dateInput}>
-              <Text>Check-In Time: {checkInTime.toLocaleTimeString()}</Text>
-            </TouchableOpacity>
+            {/* Flight Details Dropdown Section */}
+            <List.Accordion
+              title="Flight Details"
+              expanded={expandedFlight}
+              onPress={() => setExpandedFlight(!expandedFlight)}
+              style={styles.accordion}
+            >
+              {/* Departure Date */}
+              <TouchableOpacity onPress={() => setShowDepartureDatePicker(true)} style={styles.dateInput}>
+                <Text>Departure Date: {departureDate.toDateString()}</Text>
+              </TouchableOpacity>
 
-            {showCheckInTimePicker && (
-              <DateTimePicker 
-                value={checkInTime} 
-                mode="time" 
-                display="default" 
-                onChange={(event, selectedTime) => {
-                  if (selectedTime) setCheckInTime(selectedTime);
-                  setShowCheckInTimePicker(false);
-                }} 
+              {showDepartureDatePicker && (
+                <DateTimePicker 
+                  value={departureDate} 
+                  mode="date" 
+                  display="default" 
+                  onChange={(event, selectedDate) => {
+                    if (selectedDate) setDepartureDate(selectedDate);
+                    setShowDepartureDatePicker(false);
+                  }} 
+                />
+              )}
+
+              {/* Departure Time */}
+              <TouchableOpacity onPress={() => setShowDepartureTimePicker(true)} style={styles.dateInput}>
+                <Text>Departure Time: {departureTime.toLocaleTimeString()}</Text>
+              </TouchableOpacity>
+
+              {showDepartureTimePicker && (
+                <DateTimePicker 
+                  value={departureTime} 
+                  mode="time" 
+                  display="default" 
+                  onChange={(event, selectedTime) => {
+                    if (selectedTime) setDepartureTime(selectedTime);
+                    setShowDepartureTimePicker(false);
+                  }} 
+                />
+              )}
+
+              {/* Airline */}
+              <PaperInput
+                label="Airline"
+                value={airline}
+                onChangeText={setAirline}
+                mode="outlined"
+                style={styles.inputField}
               />
-            )}
 
-            {/* Check-Out Date */}
-            <TouchableOpacity onPress={() => setShowCheckOutDatePicker(true)} style={styles.dateInput}>
-              <Text>Check-Out Date: {checkOutDate.toDateString()}</Text>
-            </TouchableOpacity>
-
-            {showCheckOutDatePicker && (
-              <DateTimePicker 
-                value={checkOutDate} 
-                mode="date" 
-                display="default" 
-                onChange={(event, selectedDate) => {
-                  if (selectedDate) setCheckOutDate(selectedDate);
-                  setShowCheckOutDatePicker(false);
-                }} 
+              {/* From Airport */}
+              <PaperInput
+                label="From Airport"
+                value={fromAirport}
+                onChangeText={setFromAirport}
+                mode="outlined"
+                style={styles.inputField}
               />
-            )}
 
-            {/* Accommodation Name */}
-            <PaperInput
-              label="Accommodation Name"
-              value={accommodationName}
-              onChangeText={setAccommodationName}
-              mode="outlined"
-              style={styles.inputField}
-            />
+              {/* To Airport */}
+              <PaperInput
+                label="To Airport"
+                value={toAirport}
+                onChangeText={setToAirport}
+                mode="outlined"
+                style={styles.inputField}
+              />
 
-            {/* Confirmation Number */}
-            <PaperInput
-              label="Confirmation Number"
-              value={confirmationAccommodationNumber}
-              onChangeText={setConfirmationAccommodationNumber}
-              mode="outlined"
-              style={styles.inputField}
-            />
-          </List.Accordion>
+              {/* Flight Number */}
+              <PaperInput
+                label="Flight Number"
+                value={flightNumber}
+                onChangeText={setFlightNumber}
+                mode="outlined"
+                style={styles.inputField}
+              />
 
-          {/* Add Plans Button */}
-          <PaperButton 
-            mode="outlined" 
-            onPress={() => console.log("Add Plan pressed")}
-            style={styles.addPlanButton}
-          >
-            Add Plans
-          </PaperButton>
+              {/* Confirmation Number */}
+              <PaperInput
+                label="Confirmation Number"
+                value={confirmationNumber}
+                onChangeText={setConfirmationNumber}
+                mode="outlined"
+                style={styles.inputField}
+              />
 
-          {/* Save Button */}
+              {/* Terminal */}
+              <PaperInput
+                label="Terminal"
+                value={terminal}
+                onChangeText={setTerminal}
+                mode="outlined"
+                style={styles.inputField}
+              />
+            </List.Accordion>
+
+            {/* Accommodation Details Dropdown Section */}
+            <List.Accordion
+              title="Accommodation Details"
+              expanded={expandedAccommodation}
+              onPress={() => setExpandedAccommodation(!expandedAccommodation)}
+              style={styles.accordion}
+            >
+              {/* Accommodation Name */}
+              <PaperInput
+                label="Accommodation Name"
+                value={accommodationName}
+                onChangeText={setAccommodationName}
+                mode="outlined"
+                style={styles.inputField}
+              />
+
+              {/* Check-In Date */}
+              <TouchableOpacity onPress={() => setShowCheckInDatePicker(true)} style={styles.dateInput}>
+                <Text>Check-In Date: {checkInDate.toDateString()}</Text>
+              </TouchableOpacity>
+
+              {showCheckInDatePicker && (
+                <DateTimePicker 
+                  value={checkInDate} 
+                  mode="date" 
+                  display="default" 
+                  onChange={(event, selectedDate) => {
+                    if (selectedDate) setCheckInDate(selectedDate);
+                    setShowCheckInDatePicker(false);
+                  }} 
+                />
+              )}
+
+              {/* Check-In Time */}
+              <TouchableOpacity onPress={() => setShowCheckInTimePicker(true)} style={styles.dateInput}>
+                <Text>Check-In Time: {checkInTime.toLocaleTimeString()}</Text>
+              </TouchableOpacity>
+
+              {showCheckInTimePicker && (
+                <DateTimePicker 
+                  value={checkInTime} 
+                  mode="time" 
+                  display="default" 
+                  onChange={(event, selectedTime) => {
+                    if (selectedTime) setCheckInTime(selectedTime);
+                    setShowCheckInTimePicker(false);
+                  }} 
+                />
+              )}
+
+              {/* Check-Out Date */}
+              <TouchableOpacity onPress={() => setShowCheckOutDatePicker(true)} style={styles.dateInput}>
+                <Text>Check-Out Date: {checkOutDate.toDateString()}</Text>
+              </TouchableOpacity>
+
+              {showCheckOutDatePicker && (
+                <DateTimePicker 
+                  value={checkOutDate} 
+                  mode="date" 
+                  display="default" 
+                  onChange={(event, selectedDate) => {
+                    if (selectedDate) setCheckOutDate(selectedDate);
+                    setShowCheckOutDatePicker(false);
+                  }} 
+                />
+              )}
+
+              {/* Confirmation Number */}
+              <PaperInput
+                label="Confirmation Number"
+                value={confirmationAccommodationNumber}
+                onChangeText={setConfirmationAccommodationNumber}
+                mode="outlined"
+                style={styles.inputField}
+              />
+            </List.Accordion>
+          </View>
+
+          {/* Itinerary Section */}
+          <View style={styles.card}>
+            <Text style={styles.cardHeader}>Itinerary</Text>
+            {/* Add Plans Button */}
+            <PaperButton 
+              mode="outlined" 
+              onPress={() => console.log("Add Plan pressed")}
+              style={styles.addPlanButton}
+            >
+              Add Plans
+            </PaperButton>
+          </View>
+
+          {/* Save Trip Button */}
           <PaperButton 
             mode="contained" 
-            onPress={() => console.log({ tripName, startDate, endDate, departureDate, departureTime, airline, fromAirport, toAirport, flightNumber, confirmationNumber, terminal, accommodationName, checkInDate, checkInTime, checkOutDate, confirmationAccommodationNumber })} 
+            onPress={() => console.log({ tripName, startDate, endDate, departureDate, departureTime, airline, fromAirport, toAirport, flightNumber, confirmationNumber, terminal, accommodationName, checkInDate, checkInTime, checkOutDate, confirmationAccommodationNumber, itinerary })} 
             style={styles.saveButton}
           >
             Save Trip
@@ -338,10 +348,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginVertical: 10,
   },
+  card: {
+    backgroundColor: 'white',
+    marginBottom: 20,
+    padding: 15,
+    borderRadius: 8,
+    shadowColor: 'rgba(0,0,0,0.1)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    shadowOpacity: 0.1,
+  },
+  cardHeader: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 15,
+    color: '#333',
+  },
   addPlanButton: {
     marginTop: 20,
     padding: 8,
-    marginBottom: 10,
   },
   saveButton: {
     marginTop: 20,
