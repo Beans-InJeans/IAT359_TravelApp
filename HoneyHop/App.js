@@ -14,6 +14,7 @@ import SignUp from './src/screens/SignUp';
 import List from './src/screens/List';
 import TimelineScreen from './src/screens/Timeline';
 import Map from './src/screens/Map';
+import Plan from './src/screens/Plan';
 import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
@@ -59,6 +60,7 @@ export default function App() {
         <Stack.Screen name='List' component={List}/>
         <Stack.Screen name='Timeline' component={TimelineScreen}/>
         <Stack.Screen name='Map' component={Map}/>
+        <Stack.Screen name='Plan' component={Plan}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
