@@ -7,6 +7,9 @@ import { TextInput as PaperInput, Button as PaperButton, List } from "react-nati
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
+import { db } from '../firebaseConfig';
+import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
+
 
 export default function Plan({navigate}) {
   const navigation = useNavigation();
@@ -25,22 +28,29 @@ export default function Plan({navigate}) {
     Keyboard.dismiss();
   };
 
-  const savePlan = () => {
+  const savePlan = async () => {
     const planDetails = {
       category,
       location,
       notes,
       startDate,
     };
-
+  
+    try {
+      // Add the plan details to the Firestore collection "plans"
+      const docRef = await addDoc(collection(db, "trips"), planDetails);
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  
     // Save plan details (store in state or local storage if needed)
     console.log(planDetails);
-
-    // Navigate to the Timeline screen with the plan data
-    //navigation.navigate("Timeline", { planData: planDetails });
-    //navigation.goBack();
-    //navigation.navigate("Timeline", { planData: planDetails });
+  
+    // Navigate to the Plan screen with plan data
+    navigation.navigate('Timeline', { planData: planDetails });
   };
+  
 
   return (
     <TouchableWithoutFeedback onPress={closePickers}>
