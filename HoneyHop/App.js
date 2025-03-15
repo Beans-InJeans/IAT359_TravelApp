@@ -17,28 +17,28 @@ import Map from './src/screens/Map';
 import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+// const Tab = createBottomTabNavigator();
 
-const TimelineTabs = () => {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name='Timeline'
-        component={TimelineScreen}
-        options={{
-          tabBarIcon: () => <Ionicons name="list-outline" size={24} />,
-        }}
-      />
-      <Tab.Screen 
-        name='Map'
-        component={Map}
-        options={{
-          tabBarIcon: () => <Ionicons name="map-outline" size={24} />,
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
+// const TimelineTabs = () => {
+//   return (
+//     <Tab.Navigator initialRouteName='TimelineTab'>
+//       <Tab.Screen
+//         name='TimelineTab'
+//         component={TimelineScreen}
+//         options={{
+//           tabBarIcon: () => <Ionicons name="list-outline" size={24} />,
+//         }}
+//       />
+//       <Tab.Screen 
+//         name='Map'
+//         component={Map}
+//         options={{
+//           tabBarIcon: () => <Ionicons name="map-outline" size={24} />,
+//         }}
+//       />
+//     </Tab.Navigator>
+//   );
+// }
 
 export default function App() {
   const[user, setUser] = useState(null);
@@ -57,7 +57,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp}/>
         <Stack.Screen name="Login" component={LogIn}/>
         <Stack.Screen name='List' component={List}/>
-        <Stack.Screen name='Timeline' component={TimelineTabs}/>
+        <Stack.Screen name='Timeline' component={TimelineScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

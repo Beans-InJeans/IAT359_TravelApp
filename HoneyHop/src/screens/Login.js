@@ -1,8 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
 import GlobalStyles from '../../styles/GlobalStyles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebase_auth } from '../firebaseConfig';
+import * as LocalAuthentication from 'expo-local-authentication';
+
+// const Login = ({ navigation }) => {
+//   const [isBiometricAvailable, setIsBiometricAvailable] = useState(false);
+
+//   useEffect(() => {
+//     checkBiometricSupport();
+//   }, []);
+// }
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState("");
