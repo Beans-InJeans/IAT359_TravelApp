@@ -370,6 +370,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 20,
+    marginBottom: 20,
     padding: 8,
   },
 });
