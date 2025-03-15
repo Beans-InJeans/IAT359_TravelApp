@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-nati
 import { useRoute } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function Timeline() {
+export default function Timeline({navigation}) {
   const route = useRoute();
   const tripData = route.params?.tripData;
 
@@ -79,9 +79,12 @@ export default function Timeline() {
 
       </ScrollView>
       {/* Floating Action Button */}
-      <TouchableOpacity style={styles.fab} onPress={() => console.log('Add plan clicked')}>
-        <MaterialCommunityIcons name="plus" size={24} color="white" />
-      </TouchableOpacity>
+      <TouchableOpacity
+      style={styles.fab}
+      onPress={() => navigation.navigate('Plan')} 
+    >
+      <MaterialCommunityIcons name="plus" size={24} color="white" />
+    </TouchableOpacity>
     </View>
   );
 }
