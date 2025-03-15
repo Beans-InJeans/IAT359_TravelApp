@@ -15,33 +15,10 @@ export default function Timeline() {
     );
   }
 
-  const events = [
-    {
-      title: 'Departure Flight',
-      date: tripData.departureDate ? new Date(tripData.departureDate) : null,
-      time: tripData.departureTime ? new Date(tripData.departureTime) : null,
-      description: `${tripData.airline} from ${tripData.fromAirport} to ${tripData.toAirport}`,
-      type: 'flight',
-    },
-    {
-      title: 'Hotel Check-in',
-      date: tripData.hotelCheckIn ? new Date(tripData.hotelCheckIn) : null,
-      description: tripData.hotelName ? `Check-in at ${tripData.hotelName}` : null,
-      type: 'hotel',
-    },
-    {
-      title: 'Hotel Check-out',
-      date: tripData.hotelCheckOut ? new Date(tripData.hotelCheckOut) : null,
-      description: `Leaving ${tripData.hotelName}`,
-      type: 'hotel',
-    },
-    {
-      title: 'City Tour',
-      date: tripData.activityDate ? new Date(tripData.activityDate) : null,
-      description: tripData.activityName ? `Activity: ${tripData.activityName}` : null,
-      type: 'activity',
-    },
-  ];
+  console.log(tripData.accommodationName);
+
+  // Extract accommodation data (if exists)
+  const accommodations = tripData.accommodations || [];
 
   return (
     <View style={styles.container}>
@@ -51,39 +28,55 @@ export default function Timeline() {
       </Text>
 
       <ScrollView style={styles.timeline}>
-        <View style={styles.timelineContainer}>
-          {events.map((event, index) => {
-            if (!event.date && !event.description) return null;
-
-            return (
-              <View key={index} style={styles.timelineEvent}>
-                <View style={[styles.timelineIconContainer, styles[event.type]]}>
-                  <MaterialCommunityIcons
-                    name={
-                      event.type === 'flight' ? 'airplane-takeoff' :
-                      event.type === 'hotel' ? 'bed' :
-                      'map'
-                    }
-                    size={24}
-                    color="white"
-                  />
-                </View>
-                <View style={styles.eventContent}>
-                  <Text style={styles.eventTitle}>{event.title}</Text>
-                  {event.date && (
-                    <Text style={styles.eventDate}>
-                      {event.date.toDateString()}
-                      {event.time && ` at ${event.time.toLocaleTimeString()}`}
-                    </Text>
-                  )}
-                  {event.description && (
-                    <Text style={styles.eventDescription}>{event.description}</Text>
-                  )}
-                </View>
-              </View>
-            );
-          })}
+        {/* Flight Check In Card */}
+        <View style={styles.timelineEvent}>
+          <View style={[styles.timelineIconContainer, styles.flight]}>
+            <MaterialCommunityIcons
+              name="airplane-takeoff"
+              size={24}
+              color="white"
+            />
+          </View>
+          <View style={styles.eventContent}>
+            <Text style={styles.eventTitle}>Departure Flight</Text>
+            {tripData.departureDate && (
+              <Text style={styles.eventDate}>
+                {new Date(tripData.departureDate).toDateString()}
+                {tripData.departureTime && ` at ${new Date(tripData.departureTime).toLocaleTimeString()}`}
+              </Text>
+            )}
+            {tripData.airline && tripData.fromAirport && tripData.toAirport && (
+              <Text style={styles.eventDescription}>
+                {tripData.airline} from {tripData.fromAirport} to {tripData.toAirport}
+              </Text>
+            )}
+          </View>
         </View>
+
+        <View style={styles.timelineEvent}>
+          <View style={[styles.timelineIconContainer, styles.hotelCheckIn]}>
+            <MaterialCommunityIcons
+              name="airplane-takeoff"
+              size={24}
+              color="white"
+            />
+          </View>
+          <View style={styles.eventContent}>
+            <Text style={styles.eventTitle}>Check-In at {tripData.accommodationName}</Text>
+            {tripData.checkInDate && (
+              <Text style={styles.eventDate}>
+                {new Date(tripData.checkInDate).toDateString()}
+                {tripData.checkInDate && ` at ${new Date(tripData.checkInDate).toLocaleTimeString()}`}
+              </Text>
+            )}
+            {tripData.airline && tripData.fromAirport && tripData.toAirport && (
+              <Text style={styles.eventDescription}>
+                {tripData.airline} from {tripData.fromAirport} to {tripData.toAirport}
+              </Text>
+            )}
+          </View>
+        </View>
+
       </ScrollView>
     </View>
   );
@@ -109,10 +102,6 @@ const styles = StyleSheet.create({
   timeline: {
     flex: 1,
   },
-  timelineContainer: {
-    position: 'relative',
-    paddingVertical: 20,
-  },
   timelineEvent: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -130,11 +119,11 @@ const styles = StyleSheet.create({
   flight: {
     backgroundColor: '#3498db',
   },
-  hotel: {
+  hotelCheckIn: {
     backgroundColor: '#9b59b6',
   },
-  activity: {
-    backgroundColor: '#f39c12',
+  hotelCheckOut: {
+    backgroundColor: '#8e44ad',
   },
   eventContent: {
     marginLeft: 50,
