@@ -58,6 +58,7 @@ export default function App() {
         <Stack.Screen name="Login" component={LogIn}/>
         <Stack.Screen name='List' component={List}/>
         <Stack.Screen name='Timeline' component={TimelineScreen}/>
+        <Stack.Screen name='Map' component={Map}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
