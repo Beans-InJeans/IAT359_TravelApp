@@ -7,6 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput as PaperInput, Button as PaperButton, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../firebaseConfig';
+import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
 
 export default function TripPlanner() {
    const navigation = useNavigation(); 
@@ -59,7 +60,7 @@ export default function TripPlanner() {
   };
 
   // Save trip function
-const saveTrip = () => {
+const saveTrip = async () => {
   const tripDetails = {
     tripName,
     startDate,
@@ -77,8 +78,14 @@ const saveTrip = () => {
     checkInTime,
     checkOutDate,
     confirmationAccommodationNumber,
-    //itinerary
   };
+
+  try {
+    const docRef = await addDoc(collection(db, "trips"), tripDetails);
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
 
   // Save trip details (store in state or local storage if needed)
   console.log(tripDetails);
