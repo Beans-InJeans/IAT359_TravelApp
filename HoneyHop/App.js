@@ -12,9 +12,33 @@ import Home from './src/screens/Home';
 import LogIn from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 import List from './src/screens/List';
-import Timeline from './src/screens/Timeline';
+import TimelineScreen from './src/screens/Timeline';
+import Map from './src/screens/Map';
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const TimelineTabs = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name='Timeline'
+        component={TimelineScreen}
+        options={{
+          tabBarIcon: () => <Ionicons name="list-outline" size={24} />,
+        }}
+      />
+      <Tab.Screen 
+        name='Map'
+        component={Map}
+        options={{
+          tabBarIcon: () => <Ionicons name="map-outline" size={24} />,
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   const[user, setUser] = useState(null);
@@ -33,7 +57,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp}/>
         <Stack.Screen name="Login" component={LogIn}/>
         <Stack.Screen name='List' component={List}/>
-        <Stack.Screen name='Timeline' component={Timeline}/>
+        <Stack.Screen name='Timeline' component={TimelineTabs}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
