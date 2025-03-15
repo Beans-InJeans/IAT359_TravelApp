@@ -339,9 +339,6 @@ const saveTrip = () => {
              onPress={() => {
              // Save the trip details
             saveTrip();
-
-            // Navigate to the Timeline page
-            navigation.navigate('Timeline');
           }} 
         style={styles.saveButton}
 >
