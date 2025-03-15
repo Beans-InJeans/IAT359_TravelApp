@@ -12,6 +12,7 @@ import Home from './src/screens/Home';
 import LogIn from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 import List from './src/screens/List';
+import Timeline from './src/screens/Timeline';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp}/>
         <Stack.Screen name="Login" component={LogIn}/>
         <Stack.Screen name='List' component={List}/>
+        <Stack.Screen name='Timeline' component={Timeline}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

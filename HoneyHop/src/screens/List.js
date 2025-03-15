@@ -5,8 +5,11 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput as PaperInput, Button as PaperButton, List } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 export default function TripPlanner() {
+   const navigation = useNavigation(); 
+   
   const [tripName, setTripName] = useState('');
   const [accommodation, setAccommodation] = useState('');
   
@@ -42,6 +45,7 @@ export default function TripPlanner() {
 
   // Itinerary Section
   const [itinerary, setItinerary] = useState('');
+  
 
   const closePickers = () => {
     setShowStartDatePicker(false);
@@ -52,6 +56,29 @@ export default function TripPlanner() {
     setShowCheckInTimePicker(false);
     setShowCheckOutDatePicker(false);
     Keyboard.dismiss();
+  };
+
+  const saveTrip = () => {
+    const tripDetails = {
+      tripName,
+      startDate,
+      endDate,
+      departureDate,
+      departureTime,
+      airline,
+      fromAirport,
+      toAirport,
+      flightNumber,
+      confirmationNumber,
+      terminal,
+      accommodationName,
+      checkInDate,
+      checkInTime,
+      checkOutDate,
+      confirmationAccommodationNumber,
+      itinerary
+    };
+
   };
 
   return (
@@ -303,12 +330,18 @@ export default function TripPlanner() {
 
           {/* Save Trip Button */}
           <PaperButton 
-            mode="contained" 
-            onPress={() => console.log({ tripName, startDate, endDate, departureDate, departureTime, airline, fromAirport, toAirport, flightNumber, confirmationNumber, terminal, accommodationName, checkInDate, checkInTime, checkOutDate, confirmationAccommodationNumber, itinerary })} 
-            style={styles.saveButton}
-          >
-            Save Trip
-          </PaperButton>
+             mode="contained" 
+             onPress={() => {
+             // Save the trip details
+            saveTrip();
+
+            // Navigate to the Timeline page
+            navigation.navigate('Timeline');
+          }} 
+        style={styles.saveButton}
+>
+         Save Trip
+        </PaperButton>
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
