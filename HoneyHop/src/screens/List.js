@@ -6,8 +6,8 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput as PaperInput, Button as PaperButton, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { db } from '../firebaseConfig';
-import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
+import { db, firebase_auth } from '../firebaseConfig';
+import { getFirestore, setDoc, doc, collection, getDocs, query, where, addDoc } from "firebase/firestore";
 
 export default function TripPlanner() {
    const navigation = useNavigation(); 
@@ -60,39 +60,81 @@ export default function TripPlanner() {
   };
 
   // Save trip function
-const saveTrip = async () => {
-  const tripDetails = {
-    tripName,
-    startDate,
-    endDate,
-    departureDate,
-    departureTime,
-    airline,
-    fromAirport,
-    toAirport,
-    flightNumber,
-    confirmationNumber,
-    terminal,
-    accommodationName,
-    checkInDate,
-    checkInTime,
-    checkOutDate,
-    confirmationAccommodationNumber,
-  };
-
-  try {
-    const docRef = await addDoc(collection(db, "trips"), tripDetails);
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
+  const saveTrip = async () => {
+    if (!firebase_auth) {
+      console.log("Firebase Auth not initialized.");
+      return;
   }
+    console.log("SaveTrip function called");
 
-  // Save trip details (store in state or local storage if needed)
-  console.log(tripDetails);
+    // Ensure firebase_auth.currentUser is not null or undefined
+    const user = firebase_auth.currentUser;
+    if (!user) {
+        console.log("No user is logged in.");
+        return; // Exit early if no user is logged in
+    }
 
-  // // Navigate to the Timeline screen with trip data
-  navigation.navigate('Timeline', { tripData: tripDetails });
+    console.log("Current user UID: ", user.uid);
+
+    const tripDetails = {
+        tripName,
+        startDate,
+        endDate,
+        departureDate,
+        departureTime,
+        airline,
+        fromAirport,
+        toAirport,
+        flightNumber,
+        confirmationNumber,
+        terminal,
+        accommodationName,
+        checkInDate,
+        checkInTime,
+        checkOutDate,
+        confirmationAccommodationNumber,
+    };
+
+    try {
+        // Get a reference to the user's document using the UID
+        const userRef = doc(db, 'users', user.uid);
+
+        console.log("Checking trips collection under userRef:", userRef);
+
+        // Get a reference to the 'trips' collection under the user
+        const tripsCollectionRef = collection(userRef, 'trips');
+        const tripsSnapshot = await getDocs(tripsCollectionRef);
+
+        if (tripsSnapshot.empty) {
+            console.log("No trips found in the collection.");
+        } else {
+            console.log("Trips collection contains the following documents:");
+            tripsSnapshot.forEach(doc => {
+                console.log(doc.id, " => ", doc.data());
+            });
+        }
+
+        // Add the trip details document to the 'trips' collection
+        await addDoc(tripsCollectionRef, tripDetails);
+        console.log("Trip details saved successfully.");
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
 };
+
+
+//     //const docRef = await addDoc(collection(db, "trips"), tripDetails);
+//     console.log("Document written with ID: ", docRef.id);
+//   } catch (e) {
+//     console.error("Error adding document: ", e);
+//   }
+
+//   // Save trip details (store in state or local storage if needed)
+//   console.log(tripDetails);
+
+//   // // Navigate to the Timeline screen with trip data
+//   navigation.navigate('Timeline', { tripData: tripDetails });
+// };
 
   return (
     <TouchableWithoutFeedback onPress={closePickers}>
@@ -336,6 +378,7 @@ const saveTrip = async () => {
              onPress={() => {
              // Save the trip details
             saveTrip();
+            console.log("SaveTrip button pressed");
           }} 
         style={styles.saveButton}
 >

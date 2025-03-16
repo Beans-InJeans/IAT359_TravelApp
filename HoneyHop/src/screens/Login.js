@@ -2,9 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert, KeyboardAvo
 import GlobalStyles from '../../styles/GlobalStyles';
 import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { firebase_auth } from '../firebaseConfig';
+import { firebase_auth, db } from '../firebaseConfig';
 import * as LocalAuthentication from 'expo-local-authentication';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -21,9 +21,16 @@ const Login = ({ navigation }) => {
       const docSnap = await getDoc(docRef);
       if (!docSnap.exists()) {
         console.log("No such document!");
-        navigation.navigate("Timeline");
+        await setDoc(docRef, {
+          email: user.email,
+          uid: user.uid,
+          createdAt: new Date(),
+        });
+        console.log("User document created successfully.");
+        navigation.navigate("List");
       } else {
         console.log("Document data:", docSnap.data());
+        navigation.navigate("List");
       }
 
     } catch (error) {

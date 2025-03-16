@@ -45,11 +45,19 @@ export default function App() {
   const[user, setUser] = useState(null);
 
   useEffect(() => {
-    onAuthStateChanged(firebase_auth, (user) => {
-      if (user) { console.log("user", user.email); }
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(firebase_auth, (user) => {
+      if (user) {
+        console.log("User logged in:", user.email);
+        setUser(user);  // Set the user in the state
+      } else {
+        console.log("No user logged in.");
+        setUser(null);  // No user, reset state
+      }
     });
-  }, []);  
+
+    // Clean up the listener on unmount to prevent memory leaks
+    return () => unsubscribe();
+  }, []);
 
   return (
     <NavigationContainer>
