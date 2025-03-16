@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import GlobalStyles from '../../styles/GlobalStyles';
 import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { firebase_auth, db } from '../firebaseConfig';
-import * as LocalAuthentication from 'expo-local-authentication';
+import { firebase_auth } from '../firebaseConfig';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { TextInput as PaperInput, Button as PaperButton } from 'react-native-paper';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -19,8 +19,8 @@ const Login = ({ navigation }) => {
       const db = getFirestore();
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
+
       if (!docSnap.exists()) {
-        console.log("No such document!");
         await setDoc(docRef, {
           email: user.email,
           uid: user.uid,
@@ -44,30 +44,53 @@ const Login = ({ navigation }) => {
       style={GlobalStyles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <Text style={GlobalStyles.text}>Email</Text>
-      <TextInput
-        style={GlobalStyles.input}
-        placeholder='Enter email'
+      <PaperInput
+        label="Email"
+        mode="outlined"
         onChangeText={text => setEmail(text)}
         value={email}
         keyboardType="email-address"
         autoCapitalize="none"
+        style={styles.input}
       />
-      <Text style={GlobalStyles.text}>Password</Text>
-      <TextInput
-        style={GlobalStyles.input}
-        placeholder='Enter password'
+
+      <PaperInput
+        label="Password"
+        mode="outlined"
         onChangeText={text => setPassword(text)}
         value={password}
         secureTextEntry
+        style={styles.input}
       />
-      <TouchableOpacity
-        style={GlobalStyles.button}
-        onPress={handleLogin}>
-        <Text style={GlobalStyles.buttonText}>Login</Text>
-      </TouchableOpacity>
+
+      <PaperButton
+        mode="contained"
+        onPress={handleLogin}
+        style={styles.button}
+        labelStyle={styles.buttonText}
+      >
+        Login
+      </PaperButton>
     </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  input: {
+    marginBottom: 15,
+    marginLeft: 50,
+    marginRight: 50,
+    width: "80%",
+  },
+  button: {
+    marginTop: 10,
+    width: "80%",
+    borderRadius: 8,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
 
 export default Login;
