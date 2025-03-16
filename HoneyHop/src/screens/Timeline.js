@@ -74,6 +74,40 @@ function formatTime(time) {
   return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Output: "10:00 AM"
 }
 
+async function fetchCityCoordinates(tripName) {
+
+  try {
+    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(tripName)}`);
+    const data = await response.json();
+
+    if (data.length > 0) {
+      return {
+        latitude: parseFloat(data[0].lat),
+        longitude: parseFloat(data[0].lon),
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching city coordinates:", error);
+  }
+
+  return null;
+}
+
+const goToMap = async () => {
+  if (!tripData?.tripName) {
+    console.log("No city specified");
+    return;
+  }
+
+  const coordinates = await fetchCityCoordinates(tripData.tripName);
+  if (coordinates) {
+    console.log("Coordinates fetched:", coordinates);
+    navigation.navigate('Map',{ city: tripData.tripName, ...coordinates });
+  } else {
+    console.log("City coordinates not found");
+  }
+};
+
 return (
   <View style={styles.container}>
     <Text style={styles.title}>{tripData?.tripName || "Loading..."}</Text>
@@ -114,8 +148,9 @@ return (
       </View>
     </ScrollView>
 
-    <TouchableOpacity onPress={() => navigation.navigate('Map')}>
-        <Text>Map</Text>
+   {/* Updated Map Button */}
+   <TouchableOpacity onPress={goToMap} style={styles.mapButton}>
+        <Text style={styles.mapButtonText}>View on Map</Text>
       </TouchableOpacity>
 
       {/* Floating Action Button */}
