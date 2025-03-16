@@ -30,7 +30,7 @@ const Login = ({ navigation }) => {
         navigation.navigate("List");
       } else {
         console.log("Document data:", docSnap.data());
-        navigation.navigate("List");
+        navigation.navigate("Timeline");
       }
 
     } catch (error) {
