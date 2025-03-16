@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebase_auth } from "../firebaseConfig";
 import GlobalStyles from "../../styles/GlobalStyles";
+import { TextInput as PaperInput, Button as PaperButton } from "react-native-paper";
 
 export default function SignUp({ navigation }) {
     const [email, setEmail] = useState("");
@@ -11,53 +12,85 @@ export default function SignUp({ navigation }) {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
 
-    const handleSignUp = async() => {
+    const handleSignUp = async () => {
         try {
             await createUserWithEmailAndPassword(firebase_auth, email, password);
             console.log("User created successfully.");
             navigation.navigate("Login");
         } catch (error) {
             console.error(error.message);
+            Alert.alert("Sign-Up Failed", error.message);
         }
-    }
+    };
 
-    return(
-        <View style={GlobalStyles.container}>
-            <Text style={GlobalStyles.header} >Sign Up</Text>
-            <TextInput
-                style={GlobalStyles.input}
-                onChangeText={text => setFirstname(text)}    
+    return (
+        <KeyboardAvoidingView 
+            style={GlobalStyles.container}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+            <PaperInput
+                label="First Name"
+                mode="outlined"
+                onChangeText={text => setFirstname(text)}
                 value={firstname}
-                placeholder='First Name'
+                style={styles.input}
             />
-            <TextInput
-                style={GlobalStyles.input}
+            <PaperInput
+                label="Last Name"
+                mode="outlined"
                 onChangeText={text => setLastname(text)}
                 value={lastname}
-                placeholder='Last Name'
+                style={styles.input}
             />
-            <TextInput
-                style={GlobalStyles.input}
+            <PaperInput
+                label="Email"
+                mode="outlined"
                 onChangeText={text => setEmail(text)}
                 value={email}
-                placeholder='Email'
+                keyboardType="email-address"
+                autoCapitalize="none"
+                style={styles.input}
             />
-            <TextInput
-                style={GlobalStyles.input}
+            <PaperInput
+                label="Username"
+                mode="outlined"
                 onChangeText={text => setUsername(text)}
                 value={username}
-                placeholder='Username'
+                style={styles.input}
             />
-            <TextInput
-                style={GlobalStyles.input}
+            <PaperInput
+                label="Password"
+                mode="outlined"
                 onChangeText={text => setPassword(text)}
                 value={password}
-                placeholder='Password'
                 secureTextEntry
+                style={styles.input}
             />
-            <TouchableOpacity style={GlobalStyles.button} onPress={handleSignUp}>
-                <Text style={GlobalStyles.buttonText}>Sign Up</Text>
-            </TouchableOpacity>
-        </View>
+            <PaperButton
+                mode="contained"
+                onPress={handleSignUp}
+                style={styles.button}
+                labelStyle={styles.buttonText}
+            >
+                Sign Up
+            </PaperButton>
+        </KeyboardAvoidingView>
     );
 }
+
+const styles = StyleSheet.create({
+    input: {
+        marginBottom: 15,
+        width: "80%",
+    },
+    button: {
+        marginTop: 10,
+        width: "80%",
+        borderRadius: 8,
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: "600",
+    },
+});
+
