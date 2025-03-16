@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Touchable } from 'react-native';
-import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { firebase_auth, db } from '../firebaseConfig';
 import { collection, getDocs, query, where, addDoc, onSnapshot, doc } from "firebase/firestore";
@@ -34,6 +33,7 @@ export default function Timeline({ navigation }) {
       
       // Debug log to check if trips are successfully retrieved
       console.log("Trips fetched successfully:", trips);
+      setTripData(trips[0]); // Update state with the first trip
       
     } catch (error) {
       console.error("Error fetching trips:", error);
@@ -47,55 +47,74 @@ export default function Timeline({ navigation }) {
       </View>
     );
   }
+// Function to properly format dates
+function formatDate(date) {
+  if (!date) return "No Date"; // Handle missing dates
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{tripData.tripName || "No Trip Name"}</Text>
-      <Text style={styles.dateRange}>
-        {tripData.startDate ? new Date(tripData.startDate).toDateString() : ''} - 
-        {tripData.endDate ? new Date(tripData.endDate).toDateString() : ''}
-      </Text>
+  // Check if Firestore Timestamp, then convert
+  if (date.seconds) {
+    date = new Date(date.seconds * 1000);
+  } else {
+    date = new Date(date);
+  }
 
-      <ScrollView style={styles.timeline}>
-        {/* Flight Check-In Card */}
-        <View style={styles.timelineEvent}>
-          <View style={[styles.timelineIconContainer, styles.flight]}>
-            <MaterialCommunityIcons name="airplane-takeoff" size={24} color="white" />
-          </View>
-          <View style={styles.eventContent}>
-            <Text style={styles.eventTitle}>Departure Flight</Text>
-            {tripData.departureDate && (
-              <Text style={styles.eventDate}>
-                {new Date(tripData.departureDate).toDateString()}
-                {tripData.departureTime && ` at ${tripData.departureTime}`}
-              </Text>
-            )}
-            {tripData.airline && tripData.fromAirport && tripData.toAirport && (
-              <Text style={styles.eventDescription}>
-                {tripData.airline} from {tripData.fromAirport} to {tripData.toAirport}
-              </Text>
-            )}
-          </View>
+  return date.toDateString(); // Output: "Mon, Mar 16 2025"
+}
+
+function formatTime(time) {
+  if (!time) return ""; // Handle missing times
+
+  // Check if Firestore Timestamp, then convert
+  if (time.seconds) {
+    time = new Date(time.seconds * 1000);
+  } else {
+    time = new Date(time);
+  }
+
+  return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Output: "10:00 AM"
+}
+
+return (
+  <View style={styles.container}>
+    <Text style={styles.title}>{tripData?.tripName || "Loading..."}</Text>
+    <Text style={styles.dateRange}>
+      {formatDate(tripData?.startDate)} - {formatDate(tripData?.endDate)}
+    </Text>
+
+    <ScrollView style={styles.timeline}>
+      {/* Flight Check-In Card */}
+      <View style={styles.timelineEvent}>
+        <View style={[styles.timelineIconContainer, styles.flight]}>
+          <MaterialCommunityIcons name="airplane-takeoff" size={24} color="white" />
         </View>
-
-        {/* Hotel Check-In */}
-        <View style={styles.timelineEvent}>
-          <View style={[styles.timelineIconContainer, styles.hotelCheckIn]}>
-            <MaterialCommunityIcons name="bed" size={24} color="white" />
-          </View>
-          <View style={styles.eventContent}>
-            <Text style={styles.eventTitle}>Check-In at {tripData.accommodationName || "Unknown Hotel"}</Text>
-            {tripData.checkInDate && (
-              <Text style={styles.eventDate}>
-                {new Date(tripData.checkInDate).toDateString()}
-                {tripData.checkInTime && ` at ${tripData.checkInTime}`}
-              </Text>
-            )}
-          </View>
+        <View style={styles.eventContent}>
+          <Text style={styles.eventTitle}>Departure Flight</Text>
+          <Text style={styles.eventDate}>
+            {formatDate(tripData?.departureDate)} {formatTime(tripData?.departureTime)}
+          </Text>
+          {tripData?.airline && tripData?.fromAirport && tripData?.toAirport && (
+            <Text style={styles.eventDescription}>
+              {tripData.airline} from {tripData.fromAirport} to {tripData.toAirport}
+            </Text>
+          )}
         </View>
-      </ScrollView>
+      </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Map')}>
+      {/* Hotel Check-In */}
+      <View style={styles.timelineEvent}>
+        <View style={[styles.timelineIconContainer, styles.hotelCheckIn]}>
+          <MaterialCommunityIcons name="bed" size={24} color="white" />
+        </View>
+        <View style={styles.eventContent}>
+          <Text style={styles.eventTitle}>Check-In at {tripData?.accommodationName || "No Accommodation"}</Text>
+          <Text style={styles.eventDate}>
+            {formatDate(tripData?.checkInDate)} {formatTime(tripData?.checkInTime)}
+          </Text>
+        </View>
+      </View>
+    </ScrollView>
+
+    <TouchableOpacity onPress={() => navigation.navigate('Map')}>
         <Text>Map</Text>
       </TouchableOpacity>
 
@@ -186,4 +205,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
   },
-});
+  }
+);
