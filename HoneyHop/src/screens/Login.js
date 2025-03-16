@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebase_auth } from '../firebaseConfig';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -11,9 +12,20 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {  
     try {
-      await signInWithEmailAndPassword(firebase_auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(firebase_auth, email, password);
+      const user = userCredential.user;
       console.log("Logged in successfully.");
-      navigation.navigate("List");
+
+      const db = getFirestore();
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        console.log("No such document!");
+        navigation.navigate("Timeline");
+      } else {
+        console.log("Document data:", docSnap.data());
+      }
+
     } catch (error) {
       console.error(error.message);
       Alert.alert("Login failed", "Invalid email or password.");
