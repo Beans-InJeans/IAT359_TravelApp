@@ -11,7 +11,6 @@ export default function Timeline({ navigation }) {
     fetchTripData();
   }, []);
 
-  // Fetch trip data from Firestore for the current user
   async function fetchTripData() {
     try {
       const user = firebase_auth.currentUser;
@@ -20,7 +19,6 @@ export default function Timeline({ navigation }) {
         return;
       }
 
-      // Reference to the user's trips collection
       const tripsCollectionRef = collection(doc(db, "users", user.uid), "trips");
       
       const querySnapshot = await getDocs(tripsCollectionRef);
@@ -31,9 +29,8 @@ export default function Timeline({ navigation }) {
 
       setTripData(trips);
       
-      // Debug log to check if trips are successfully retrieved
       console.log("Trips fetched successfully:", trips);
-      setTripData(trips[0]); // Update state with the first trip
+      setTripData(trips[0]); 
       
     } catch (error) {
       console.error("Error fetching trips:", error);
@@ -47,24 +44,19 @@ export default function Timeline({ navigation }) {
       </View>
     );
   }
-// Function to properly format dates
-function formatDate(date) {
-  if (!date) return "No Date"; // Handle missing dates
 
-  // Check if Firestore Timestamp, then convert
+function formatDate(date) {
+  if (!date) return "No Date"; 
   if (date.seconds) {
     date = new Date(date.seconds * 1000);
   } else {
     date = new Date(date);
   }
-
   return date.toDateString(); // Output: "Mon, Mar 16 2025"
 }
 
 function formatTime(time) {
-  if (!time) return ""; // Handle missing times
-
-  // Check if Firestore Timestamp, then convert
+  if (!time) return ""; 
   if (time.seconds) {
     time = new Date(time.seconds * 1000);
   } else {
