@@ -5,10 +5,32 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebase_auth } from '../firebaseConfig';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { TextInput as PaperInput, Button as PaperButton } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const getEmailFromStore = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem("userEmail");
+        const storedPassword = await AsyncStorage.getItem("userPassword");
+
+        if (storedEmail && storedPassword) {
+          setEmail(storedEmail);
+          setPassword(storedPassword);
+          console.log(storedEmail);
+        } else {
+          console.log("Email not found in SecureStore");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getEmailFromStore();
+  }, []);
 
   const handleLogin = async () => {  
     try {
@@ -19,6 +41,9 @@ const Login = ({ navigation }) => {
       const db = getFirestore();
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
+
+      await AsyncStorage.setItem("userEmail", email);
+      await AsyncStorage.setItem("userPassword", password);
 
       if (!docSnap.exists()) {
         await setDoc(docRef, {
