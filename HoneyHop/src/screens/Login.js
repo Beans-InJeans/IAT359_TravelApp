@@ -6,6 +6,7 @@ import { firebase_auth } from '../firebaseConfig';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { TextInput as PaperInput, Button as PaperButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -14,15 +15,31 @@ const Login = ({ navigation }) => {
   useEffect(() => {
     const getEmailFromStore = async () => {
       try {
-        const storedEmail = await AsyncStorage.getItem("userEmail");
-        const storedPassword = await AsyncStorage.getItem("userPassword");
+        const hasBiometrics = await LocalAuthentication.hasHardwareAsync();
+        console.log("Biometric available: ", hasBiometrics);
 
-        if (storedEmail && storedPassword) {
-          setEmail(storedEmail);
-          setPassword(storedPassword);
-          console.log(storedEmail);
-        } else {
-          console.log("Email not found in SecureStore");
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+        console.log("Biometric enrolled: ", isEnrolled);
+
+        console.log("Attempting authentication...");
+
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Authenticate for login details",
+        });
+        
+        if (result.success) {
+          console.log("Face ID successful");
+
+          const storedEmail = await AsyncStorage.getItem("userEmail");
+          const storedPassword = await AsyncStorage.getItem("userPassword");
+
+          if (storedEmail && storedPassword) {
+            setEmail(storedEmail);
+            setPassword(storedPassword);
+            console.log(storedEmail);
+          } else {
+            console.log("Email not found in AsyncStorage");
+          }
         }
       } catch (error) {
         console.log(error);
