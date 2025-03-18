@@ -28,7 +28,7 @@ const Login = ({ navigation }) => {
         });
         
         if (result.success) {
-          console.log("Face ID successful");
+          console.log("Biometric successful");
 
           const storedEmail = await AsyncStorage.getItem("userEmail");
           const storedPassword = await AsyncStorage.getItem("userPassword");
