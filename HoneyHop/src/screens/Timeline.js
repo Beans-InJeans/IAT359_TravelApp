@@ -94,7 +94,11 @@ const goToMap = async () => {
   const coordinates = await fetchCityCoordinates(tripData.tripName);
   if (coordinates) {
     console.log("Coordinates fetched:", coordinates);
-    navigation.navigate('Map',{ city: tripData.tripName, ...coordinates });
+    navigation.navigate('Map',{ 
+      city: tripData.tripName, 
+      ...coordinates, 
+      airport: tripData.toAirport
+    });
   } else {
     console.log("City coordinates not found");
   }
