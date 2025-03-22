@@ -1,155 +1,115 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Touchable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { firebase_auth, db } from '../firebaseConfig';
-import { collection, getDocs, query, where, addDoc, onSnapshot, doc } from "firebase/firestore";
+import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
 
 export default function Timeline({ navigation }) {
   const [tripData, setTripData] = useState([]);
+  const [plans, setPlans] = useState([]);
 
   useEffect(() => {
     fetchTripData();
+    fetchPlans();
   }, []);
 
   async function fetchTripData() {
     try {
       const user = firebase_auth.currentUser;
-      if (!user) {
-        console.log("No user is logged in");
-        return;
-      }
-
-      const tripsCollectionRef = collection(doc(db, "users", user.uid), "trips");
+      if (!user) return;
       
+      const tripsCollectionRef = collection(doc(db, "users", user.uid), "trips");
       const querySnapshot = await getDocs(tripsCollectionRef);
       const trips = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
-      setTripData(trips);
       
-      console.log("Trips fetched successfully:", trips);
-      setTripData(trips[0]); 
-      
+      setTripData(trips[0] || {});
     } catch (error) {
       console.error("Error fetching trips:", error);
     }
   }
 
-  if (tripData.length === 0) {
-    return (
-      <View style={styles.container}>
-        <Text>No trips available</Text>
-      </View>
-    );
-  }
+  function fetchPlans() {
+    const user = firebase_auth.currentUser;
+    if (!user) return;
 
-function formatDate(date) {
-  if (!date) return "No Date"; 
-  if (date.seconds) {
-    date = new Date(date.seconds * 1000);
-  } else {
-    date = new Date(date);
-  }
-  return date.toDateString(); // Output: "Mon, Mar 16 2025"
-}
-
-function formatTime(time) {
-  if (!time) return ""; 
-  if (time.seconds) {
-    time = new Date(time.seconds * 1000);
-  } else {
-    time = new Date(time);
-  }
-
-  return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Output: "10:00 AM"
-}
-
-async function fetchCityCoordinates(tripName) {
-
-  try {
-    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(tripName)}`);
-    const data = await response.json();
-
-    if (data.length > 0) {
-      return {
-        latitude: parseFloat(data[0].lat),
-        longitude: parseFloat(data[0].lon),
-      };
-    }
-  } catch (error) {
-    console.error("Error fetching city coordinates:", error);
-  }
-
-  return null;
-}
-
-const goToMap = async () => {
-  if (!tripData?.tripName) {
-    console.log("No city specified");
-    return;
-  }
-
-  const coordinates = await fetchCityCoordinates(tripData.tripName);
-  if (coordinates) {
-    console.log("Coordinates fetched:", coordinates);
-    navigation.navigate('Map',{ 
-      city: tripData.tripName, 
-      ...coordinates, 
-      airport: tripData.toAirport
+    const plansCollectionRef = collection(doc(db, "users", user.uid), "plans");
+    onSnapshot(plansCollectionRef, (snapshot) => {
+      const newPlans = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setPlans(newPlans);
     });
-  } else {
-    console.log("City coordinates not found");
   }
-};
 
-return (
-  <View style={styles.container}>
-    <Text style={styles.title}>{tripData?.tripName || "Loading..."}</Text>
-    <Text style={styles.dateRange}>
-      {formatDate(tripData?.startDate)} - {formatDate(tripData?.endDate)}
-    </Text>
+  function formatDate(date) {
+    if (!date) return "No Date";
+    if (date.seconds) date = new Date(date.seconds * 1000);
+    else date = new Date(date);
+    return date.toDateString();
+  }
 
-    <ScrollView style={styles.timeline}>
-      {/* Flight Check-In Card */}
-      <View style={styles.timelineEvent}>
-        <View style={[styles.timelineIconContainer, styles.flight]}>
-          <MaterialCommunityIcons name="airplane-takeoff" size={24} color="white" />
+  function formatTime(time) {
+    if (!time) return "";
+    if (time.seconds) time = new Date(time.seconds * 1000);
+    else time = new Date(time);
+    return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function getPlanIcon(category) {
+    switch (category) {
+      case "Food":
+        return "food";
+      case "Activity":
+        return "run";
+      default:
+        return "calendar";
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{tripData?.tripName || "Loading..."}</Text>
+      <Text style={styles.dateRange}>{formatDate(tripData?.startDate)} - {formatDate(tripData?.endDate)}</Text>
+
+      <ScrollView style={styles.timeline}>
+        <View style={styles.timelineEvent}>
+          <View style={[styles.timelineIconContainer, styles.flight]}>
+            <MaterialCommunityIcons name="airplane-takeoff" size={24} color="white" />
+          </View>
+          <View style={styles.eventContent}>
+            <Text style={styles.eventTitle}>Departure Flight</Text>
+            <Text style={styles.eventDate}>{formatDate(tripData?.departureDate)} {formatTime(tripData?.departureTime)}</Text>
+            {tripData?.airline && (
+              <Text style={styles.eventDescription}>{tripData.airline} from {tripData.fromAirport} to {tripData.toAirport}</Text>
+            )}
+          </View>
         </View>
-        <View style={styles.eventContent}>
-          <Text style={styles.eventTitle}>Departure Flight</Text>
-          <Text style={styles.eventDate}>
-            {formatDate(tripData?.departureDate)} {formatTime(tripData?.departureTime)}
-          </Text>
-          {tripData?.airline && tripData?.fromAirport && tripData?.toAirport && (
-            <Text style={styles.eventDescription}>
-              {tripData.airline} from {tripData.fromAirport} to {tripData.toAirport}
-            </Text>
-          )}
-        </View>
-      </View>
 
-      {/* Hotel Check-In */}
-      <View style={styles.timelineEvent}>
-        <View style={[styles.timelineIconContainer, styles.hotelCheckIn]}>
-          <MaterialCommunityIcons name="bed" size={24} color="white" />
+        <View style={styles.timelineEvent}>
+          <View style={[styles.timelineIconContainer, styles.hotelCheckIn]}>
+            <MaterialCommunityIcons name="bed" size={24} color="white" />
+          </View>
+          <View style={styles.eventContent}>
+            <Text style={styles.eventTitle}>Check-In at {tripData?.accommodationName || "No Accommodation"}</Text>
+            <Text style={styles.eventDate}>{formatDate(tripData?.checkInDate)} {formatTime(tripData?.checkInTime)}</Text>
+          </View>
         </View>
-        <View style={styles.eventContent}>
-          <Text style={styles.eventTitle}>Check-In at {tripData?.accommodationName || "No Accommodation"}</Text>
-          <Text style={styles.eventDate}>
-            {formatDate(tripData?.checkInDate)} {formatTime(tripData?.checkInTime)}
-          </Text>
-        </View>
-      </View>
-    </ScrollView>
 
-   {/* Updated Map Button */}
-   <TouchableOpacity onPress={goToMap} style={styles.mapButton}>
-        <Text style={styles.mapButtonText}>View on Map</Text>
-      </TouchableOpacity>
+        {plans.map((plan) => (
+          <View key={plan.id} style={styles.timelineEvent}>
+            <View style={[styles.timelineIconContainer, styles.activity]}>
+              <MaterialCommunityIcons name={getPlanIcon(plan.category)} size={24} color="white" />
+            </View>
+            <View style={styles.eventContent}>
+              <Text style={styles.eventTitle}>{plan.activityTitle}</Text>
+              <Text style={styles.eventDate}>{formatDate(plan.date)} {formatTime(plan.time)}</Text>
+              <Text style={styles.eventDescription}>{plan.location}</Text>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
 
-      {/* Floating Action Button */}
       <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('Plan')}>
         <MaterialCommunityIcons name="plus" size={24} color="white" />
       </TouchableOpacity>
@@ -197,8 +157,8 @@ const styles = StyleSheet.create({
   hotelCheckIn: {
     backgroundColor: '#9b59b6',
   },
-  hotelCheckOut: {
-    backgroundColor: '#8e44ad',
+  activity: {
+    backgroundColor: '#f39c12',
   },
   eventContent: {
     marginLeft: 50,
@@ -236,5 +196,4 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
   },
-  }
-);
+});
