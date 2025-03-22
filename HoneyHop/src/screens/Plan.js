@@ -3,54 +3,70 @@ import {
   View, Text, Keyboard, TouchableOpacity, 
   KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, StyleSheet 
 } from "react-native";
-import { TextInput as PaperInput, Button as PaperButton, List } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { TextInput as PaperInput, Button as PaperButton } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { db } from '../firebaseConfig';
-import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc } from "firebase/firestore";
+import { firebase_auth } from "../firebaseConfig"; // Ensure Firebase auth is properly imported
 
-
-export default function Plan({navigate}) {
+export default function Plan() {
   const navigation = useNavigation();
 
   // State for inputs
   const [category, setCategory] = useState("food");
+  const [activityTitle, setActivityTitle] = useState(""); // New Input Field
   const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
 
-  // Date picker states
-  const [startDate, setStartDate] = useState(new Date());
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  // Date & Time picker states
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [time, setTime] = useState(new Date());
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const closePickers = () => {
-    setShowStartDatePicker(false);
+    setShowDatePicker(false);
+    setShowTimePicker(false);
     Keyboard.dismiss();
   };
 
   const savePlan = async () => {
-    const planDetails = {
-      category,
-      location,
-      notes,
-      startDate,
-    };
-  
-    try {
-      // Add the plan details to the Firestore collection "plans"
-      const docRef = await addDoc(collection(db, "trips"), planDetails);
-      console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
+    if (!firebase_auth) {
+        console.log("Firebase Auth not initialized.");
+        return;
     }
-  
-    // Save plan details (store in state or local storage if needed)
-    console.log(planDetails);
-  
-    // Navigate to the Plan screen with plan data
-    navigation.navigate('Timeline', { planData: planDetails });
+
+    const user = firebase_auth.currentUser;
+    if (!user) {
+        console.log("No user is logged in.");
+        return;
+    }
+
+    console.log("Current user UID: ", user.uid);
+
+    const planDetails = {
+        category,
+        activityTitle, 
+        location,
+        notes,
+        date,
+        time,
+    };
+
+    try {
+        const userRef = doc(db, 'users', user.uid);
+        const plansCollectionRef = collection(userRef, 'plans');
+
+        await addDoc(plansCollectionRef, planDetails);
+        console.log("Plan details saved successfully.");
+
+        // Navigate to Timeline screen after saving
+        navigation.navigate('Timeline', { planData: planDetails });
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
   };
-  
 
   return (
     <TouchableWithoutFeedback onPress={closePickers}>
@@ -59,7 +75,7 @@ export default function Plan({navigate}) {
         style={styles.container}
       >
         <ScrollView keyboardShouldPersistTaps="handled">
-          {/* Header Title */}
+          {/* Header */}
           <Text style={styles.header}>Add Your Plan</Text>
 
           {/* Category Picker */}
@@ -71,6 +87,18 @@ export default function Plan({navigate}) {
             >
               <Text style={styles.pickerText}>{category === "food" ? "Food" : "Activity"}</Text>
             </TouchableOpacity>
+          </View>
+
+          {/* Activity Title Input (New) */}
+          <View style={styles.card}>
+            <Text style={styles.cardHeader}>Activity Title:</Text>
+            <PaperInput
+              label="Enter Activity Title"
+              value={activityTitle}
+              onChangeText={setActivityTitle}
+              mode="outlined"
+              style={styles.inputField}
+            />
           </View>
 
           {/* Location Input */}
@@ -99,21 +127,39 @@ export default function Plan({navigate}) {
             />
           </View>
 
-          {/* Start Date Picker */}
+          {/* Date Picker */}
           <View style={styles.card}>
-            <Text style={styles.cardHeader}>Start Date:</Text>
-            <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.dateInput}>
-              <Text>Start Date: {startDate.toDateString()}</Text>
+            <Text style={styles.cardHeader}>Select Date:</Text>
+            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateInput}>
+              <Text>{date.toDateString()}</Text>
             </TouchableOpacity>
-
-            {showStartDatePicker && (
+            {showDatePicker && (
               <DateTimePicker
-                value={startDate}
+                value={date}
                 mode="date"
                 display="default"
                 onChange={(event, selectedDate) => {
-                  if (selectedDate) setStartDate(selectedDate);
-                  setShowStartDatePicker(false);
+                  if (selectedDate) setDate(selectedDate);
+                  setShowDatePicker(false);
+                }}
+              />
+            )}
+          </View>
+
+          {/* Time Picker (New) */}
+          <View style={styles.card}>
+            <Text style={styles.cardHeader}>Select Time:</Text>
+            <TouchableOpacity onPress={() => setShowTimePicker(true)} style={styles.dateInput}>
+              <Text>{time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Text>
+            </TouchableOpacity>
+            {showTimePicker && (
+              <DateTimePicker
+                value={time}
+                mode="time"
+                display="default"
+                onChange={(event, selectedTime) => {
+                  if (selectedTime) setTime(selectedTime);
+                  setShowTimePicker(false);
                 }}
               />
             )}
@@ -122,14 +168,11 @@ export default function Plan({navigate}) {
           {/* Save Plan Button */}
           <PaperButton
             mode="contained"
-           onPress={() => {
-         // Call the savePlan function
-           savePlan();
-  }}
-  style={styles.saveButton}
->
-  Save Plan
-</PaperButton>
+            onPress={savePlan}
+            style={styles.saveButton}
+          >
+            Save Plan
+          </PaperButton>
 
         </ScrollView>
       </KeyboardAvoidingView>
@@ -202,5 +245,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   }
-  
 });
+

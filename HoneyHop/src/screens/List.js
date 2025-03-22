@@ -123,19 +123,6 @@ export default function TripPlanner() {
 };
 
 
-//     //const docRef = await addDoc(collection(db, "trips"), tripDetails);
-//     console.log("Document written with ID: ", docRef.id);
-//   } catch (e) {
-//     console.error("Error adding document: ", e);
-//   }
-
-//   // Save trip details (store in state or local storage if needed)
-//   console.log(tripDetails);
-
-//   // // Navigate to the Timeline screen with trip data
-//   navigation.navigate('Timeline', { tripData: tripDetails });
-// };
-
   return (
     <TouchableWithoutFeedback onPress={closePickers}>
       <KeyboardAvoidingView 
