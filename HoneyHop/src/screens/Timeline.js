@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; // Importing MaterialCommunityIcons
 import { firebase_auth, db } from '../firebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
 
@@ -58,12 +58,12 @@ export default function Timeline({ navigation }) {
 
   function getPlanIcon(category) {
     switch (category) {
-      case "Food":
-        return "food";
-      case "Activity":
-        return "run";
+      case "food":
+        return "food-fork-drink"; // Correct icon for Food category
+      case "activity":
+        return "run"; // Correct icon for Activity category
       default:
-        return "calendar";
+        return "calendar"; // Default icon for other categories
     }
   }
 
