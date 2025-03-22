@@ -38,7 +38,13 @@ export default function Timeline({ navigation }) {
     const plansCollectionRef = collection(doc(db, "users", user.uid), "plans");
     onSnapshot(plansCollectionRef, (snapshot) => {
       const newPlans = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setPlans(newPlans);
+      // Sort plans by date before setting them to state
+      const sortedPlans = newPlans.sort((a, b) => {
+        const dateA = new Date(a.date.seconds * 1000 || a.date);
+        const dateB = new Date(b.date.seconds * 1000 || b.date);
+        return dateA - dateB; // Sort in ascending order (chronologically)
+      });
+      setPlans(sortedPlans);
     });
   }
 
