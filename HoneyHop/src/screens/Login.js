@@ -12,6 +12,10 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  /* 
+   * Gets email from Async Storage if authenticated through biometrics
+   * Basically an autofill function
+  */
   useEffect(() => {
     const getEmailFromStore = async () => {
       try {
@@ -49,6 +53,12 @@ const Login = ({ navigation }) => {
     getEmailFromStore();
   }, []);
 
+  /*
+   * Handles login and authentication when the login button is pressed.
+   * Uses firebase to authenticate
+   * Uses firestore to get user info
+   * Uses Async Storage to save info for future logins (Autofill) 
+   */
   const handleLogin = async () => {  
     try {
       const userCredential = await signInWithEmailAndPassword(firebase_auth, email, password);

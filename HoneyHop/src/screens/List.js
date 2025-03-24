@@ -47,7 +47,7 @@ export default function TripPlanner() {
   // // Itinerary Section
   // const [itinerary, setItinerary] = useState('');
   
-
+  // For closing the pickers when they pop out
   const closePickers = () => {
     setShowStartDatePicker(false);
     setShowEndDatePicker(false);

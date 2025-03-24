@@ -41,17 +41,22 @@ const Stack = createStackNavigator();
 //   );
 // }
 
+/*
+ * Only runs once on first render
+ * Listens for authentication state (onAuthStateChanged)
+ */
 export default function App() {
   const[user, setUser] = useState(null);
 
   useEffect(() => {
+    // Unsubscribe prevents memory leaks
     const unsubscribe = onAuthStateChanged(firebase_auth, (user) => {
       if (user) {
         console.log("User logged in:", user.email);
-        setUser(user);  // Set the user in the state
+        setUser(user); 
       } else {
         console.log("No user logged in.");
-        setUser(null);  // No user, reset state
+        setUser(null);  
       }
     });
 

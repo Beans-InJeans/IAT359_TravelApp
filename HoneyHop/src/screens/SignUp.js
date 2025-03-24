@@ -12,6 +12,7 @@ export default function SignUp({ navigation }) {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
 
+    // Use firebase to create login with email and password
     const handleSignUp = async () => {
         try {
             await createUserWithEmailAndPassword(firebase_auth, email, password);

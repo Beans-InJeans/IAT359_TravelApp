@@ -6,12 +6,14 @@ import { fetchCoordinates } from '../api/openAIP';
 import { convertIataToIcao } from '../api/iataToIcao';
 import { ActivityIndicator } from 'react-native-paper';
 
+// Use react-native-maps and OpenStreetMap API to display map
 export default function MapScreen({ route }) {
   const { city, latitude, longitude, airport } = route.params;  
   const [region, setRegion] = useState(null);
   const [airportLocation, setAirportLocation] = useState(null);  
   const [loading, setLoading] = useState(true);
 
+  // Update latitude and longitute when they change
   useEffect(() => {
     if (latitude && longitude) {
       setRegion({
@@ -23,6 +25,7 @@ export default function MapScreen({ route }) {
     }
   }, [latitude, longitude]);
 
+  // Get ICAO code for airport and fetch corresponding coordinates 
   useEffect(() => {
     const loadAirport = async () => {
       try {
