@@ -79,10 +79,23 @@ const Login = ({ navigation }) => {
           createdAt: new Date(),
         });
         console.log("User document created successfully.");
-        navigation.navigate("List");
+        // navigation.navigate("List");
+        navigation.reset({
+          index: 0,
+          routes: [
+            { name: 'List' }
+          ]
+        });
       } else {
         console.log("Document data:", docSnap.data());
-        navigation.navigate("Timeline");
+        // navigation.navigate("Timeline");
+        navigation.reset({
+          index: 1,
+          routes: [
+            { name: 'List' },
+            { name: 'Timeline' }
+          ]
+        });
       }
 
     } catch (error) {
