@@ -115,11 +115,11 @@ export default function Timeline({ navigation }) {
             </View>
           </View>
         ))}
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
         onPress={() => navigation.navigate('Map')} 
         style={styles.mapButton}>
           <Text style={styles.mapButtonText}>View on Map</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </ScrollView>
 
       <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('Plan')}>

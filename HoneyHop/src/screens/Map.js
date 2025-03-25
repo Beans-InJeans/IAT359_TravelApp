@@ -1,77 +1,119 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MapView, { UrlTile, Marker } from 'react-native-maps';
-import AirportMarker from '../components/AirportMarker';
-import { fetchCoordinates } from '../api/openAIP';
-import { convertIataToIcao } from '../api/iataToIcao';
 import { ActivityIndicator } from 'react-native-paper';
+import { firebase_auth, db } from '../firebaseConfig';
+import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
 
 // Use react-native-maps and OpenStreetMap API to display map
-export default function MapScreen({ route }) {
-  const { city, latitude, longitude, airport } = route.params;  
+export default function MapScreen() {
+  // const { city, latitude, longitude, airport } = route.params;  
+  const [city, setCity] = useState(null);                   // City name
+  const [airport, setAirport] = useState(null);             // To airport address
+  const [accommodation, setAccommodation] = useState(null); // Accommodation address
   const [region, setRegion] = useState(null);
-  const [airportLocation, setAirportLocation] = useState(null);  
   const [loading, setLoading] = useState(true);
 
-  // Update latitude and longitute when they change
+  const [tripData, setTripData] = useState([]);
+  const [plans, setPlans] = useState([]);
+
   useEffect(() => {
-    if (latitude && longitude) {
-      setRegion({
-        latitude: latitude,
-        longitude: longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    }
-  }, [latitude, longitude]);
+    fetchTripData();
+    fetchPlans();
+  }, []);
 
-  // Get ICAO code for airport and fetch corresponding coordinates 
   useEffect(() => {
-    const loadAirport = async () => {
-      try {
-        if (!airport) {
-          console.log("No airport provided.");
-          setLoading(false);
-          return;
-        }
-
-        console.log(`Fetching ICAO for airport: ${airport}`);
-        const icao = await convertIataToIcao(airport);
-
-        if (!icao) {
-          console.log(`No ICAO found for airport: ${airport}`);
-          setLoading(false);
-          return;
-        }
-
-        console.log(`Fetching coordinates for ICAO: ${icao}`);
-        const coords = await fetchCoordinates(icao);
-
-        if (coords) {
-          console.log(`Airport coordinates:`, coords);
-          setAirportLocation({ ...coords, code: airport });
+    const fetchCoordinates = async () => {
+      if (tripData?.tripName) {
+        const coordinates = await fetchCityCoordinates(tripData.tripName);
+        if (coordinates) {
+          console.log("City coordinates:", coordinates);
+          setRegion({
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          });
+          setLoading(false);  // Set loading to false once the region is set
         } else {
-          console.log(`No coordinates found for ICAO: ${icao}`);
+          console.log("City coordinates not found.");
         }
-      } catch (error) {
-        console.error("Error loading airport:", error);
-      } finally {
-        setLoading(false);   // ✅ Ensure loading stops
       }
     };
 
-    loadAirport();
-  }, [airport]);
+    fetchCoordinates();
+  }, [tripData]);
 
-  if (!region) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading Map...</Text>
-      </View>
-    );
+  async function fetchCityCoordinates() {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
+      const data = await response.json();
+
+      if (data.length > 0) {
+        return {
+          latitude: parseFloat(data[0].lat),
+          longitude: parseFloat(data[0].lon),
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching city coordinates:", error);
+    }
   }
 
-  if (loading) {
+  async function fetchTripData() {
+    try {
+      const user = firebase_auth.currentUser;
+      if (!user) return;
+      
+      const tripsCollectionRef = collection(doc(db, "users", user.uid), "trips");
+      const querySnapshot = await getDocs(tripsCollectionRef);
+      const trips = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      
+      const firstTrip = trips[0] || {};
+      setTripData(firstTrip);
+      setCity(firstTrip.tripName);
+      console.log("city set: ", city);
+      setAirport(firstTrip.toAirport);
+      setAccommodation(firstTrip.accommodationAddress);
+      
+    } catch (error) {
+      console.error("Error fetching trips:", error);
+    }
+  }
+
+  function fetchPlans() {
+    const user = firebase_auth.currentUser;
+    if (!user) return;
+
+    const plansCollectionRef = collection(doc(db, "users", user.uid), "plans");
+    onSnapshot(plansCollectionRef, (snapshot) => {
+      const newPlans = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setPlans(newPlans);
+    });
+  }
+
+  // (async () => {
+  //   const goToMap = async () => {
+  //     if (!tripData?.tripName) {
+  //       console.log("No city specified.");
+  //       return;
+  //     }
+      
+  //     const coordinates = await fetchCityCoordinates(tripData.tripName);
+  //     if (coordinates) {
+  //       console.log("Coordinates fetched: ", coordinates);
+  //     } else {
+  //       console.log("City coordinates not found.");
+  //     }
+  //   };
+  
+  //   await goToMap();
+  // })();  
+
+  if (loading || !region) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color='#000000' />
@@ -91,13 +133,11 @@ export default function MapScreen({ route }) {
         />
 
         <Marker
-          coordinate={{ latitude, longitude }}
+          coordinate={{ 
+            latitude: region.latitude, 
+            longitude: region.longitude }}
           title={city}
         />
-
-        {airportLocation && (
-          <AirportMarker location={airportLocation} />
-        )}
       </MapView>
     </View>
   );
