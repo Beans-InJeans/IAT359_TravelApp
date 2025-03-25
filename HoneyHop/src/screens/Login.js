@@ -84,7 +84,6 @@ const Login = ({ navigation }) => {
           index: 0,
           routes: [
             { name: 'List' },
-            { name: 'TimelineMapTabs' }
           ]
         });
       } else {
