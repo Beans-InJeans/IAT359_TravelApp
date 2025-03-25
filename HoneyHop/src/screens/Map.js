@@ -10,7 +10,9 @@ export default function MapScreen() {
   // const { city, latitude, longitude, airport } = route.params;  
   const [city, setCity] = useState(null);                   // City name
   const [airport, setAirport] = useState(null);             // To airport address
+  const [airportCoordinates, setAirportCoordinates] = useState(null);
   const [accommodation, setAccommodation] = useState(null); // Accommodation address
+  const [accommodationCoordinates, setAccommodationCoordinates] = useState(null);
   const [region, setRegion] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -20,11 +22,24 @@ export default function MapScreen() {
   useEffect(() => {
     fetchTripData();
     fetchPlans();
+
+    const fetchAndSetAirportCoords = async () => {
+      const coordinates = await fetchAirportCoordinates();
+      if (coordinates) {
+        setAirportCoordinates(coordinates);  // Set airport coordinates to state
+        setLoading(false);  // Stop loading once coordinates are fetched
+      } else {
+        console.log("No coordinates found for the airport.");
+      }
+    };
+
+    fetchAndSetAirportCoords();  // Call the function to fetch coordinates
   }, []);
 
   useEffect(() => {
     const fetchCoordinates = async () => {
       if (tripData?.tripName) {
+        // Get the coordinates from city name
         const coordinates = await fetchCityCoordinates(tripData.tripName);
         if (coordinates) {
           console.log("City coordinates:", coordinates);
@@ -44,6 +59,7 @@ export default function MapScreen() {
     fetchCoordinates();
   }, [tripData]);
 
+  // Get coordinates from city name
   async function fetchCityCoordinates() {
     try {
       const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
@@ -57,6 +73,27 @@ export default function MapScreen() {
       }
     } catch (error) {
       console.error("Error fetching city coordinates:", error);
+    }
+  }
+
+  // Get airport coordinates from airport address
+  async function fetchAirportCoordinates() {
+    try {
+      if (airport) {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(airport)}`);
+        const data = await response.json();
+
+        if (data.length > 0) {
+          return {
+            latitude: parseFloat(data[0].lat),
+            longitude: parseFloat(data[0].lon),
+          };
+        }
+      } else {
+        console.log("Airport address is empty.");
+      }
+    } catch (error) {
+      console.error("Error fetching airport coordinates: ", error);
     }
   }
 
@@ -77,6 +114,7 @@ export default function MapScreen() {
       setCity(firstTrip.tripName);
       console.log("city set: ", city);
       setAirport(firstTrip.toAirport);
+      console.log("Airport set: ", airport);
       setAccommodation(firstTrip.accommodationAddress);
       
     } catch (error) {
@@ -94,24 +132,6 @@ export default function MapScreen() {
       setPlans(newPlans);
     });
   }
-
-  // (async () => {
-  //   const goToMap = async () => {
-  //     if (!tripData?.tripName) {
-  //       console.log("No city specified.");
-  //       return;
-  //     }
-      
-  //     const coordinates = await fetchCityCoordinates(tripData.tripName);
-  //     if (coordinates) {
-  //       console.log("Coordinates fetched: ", coordinates);
-  //     } else {
-  //       console.log("City coordinates not found.");
-  //     }
-  //   };
-  
-  //   await goToMap();
-  // })();  
 
   if (loading || !region) {
     return (
@@ -138,6 +158,26 @@ export default function MapScreen() {
             longitude: region.longitude }}
           title={city}
         />
+
+      {airportCoordinates && (
+        <Marker
+          coordinate={{
+            latitude: airportCoordinates.latitude,
+            longitude: airportCoordinates.longitude,
+          }}
+          title={airport} // Set the title for the marker (airport name)
+        />
+      )}
+
+      {accommodationCoordinates && (
+        <Marker
+          coordinate={{
+            latitude: accommodationCoordinates.latitude,
+            longitude: accommodationCoordinates.longitude,
+          }}
+          title={accommodation} // Set the title for the marker (airport name)
+        />
+      )}
       </MapView>
     </View>
   );
