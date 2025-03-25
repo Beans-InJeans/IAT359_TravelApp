@@ -62,7 +62,7 @@ export default function Plan() {
         console.log("Plan details saved successfully.");
 
         // Navigate to Timeline screen after saving
-        navigation.navigate('Timeline', { planData: planDetails });
+        navigation.navigate('TimelineMapTabs', { planData: planDetails });
     } catch (e) {
         console.error("Error adding document: ", e);
     }
