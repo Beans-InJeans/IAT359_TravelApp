@@ -1,24 +1,36 @@
 import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import App from '../App';
-import Login from '../screens/Login';
-import SignUp from '../screens/SignUp';
-import Timeline from '../screens/Timeline';
-import List from '../screens/List';
-
+import Home from '../src/screens/Home';
+import Login from '../src/screens/Login';
+import SignUp from '../src/screens/SignUp';
+import Timeline from '../src/screens/Timeline';
+import Map from '../src/screens/Map';
+import List from '../src/screens/List';
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function TimelineMapTabs() {
+    return (
+        <Tab.Navigator>
+            <Tab.Screen name="Timeline" component={Timeline} />
+            <Tab.Screen name="Map" component={Map} />
+        </Tab.Navigator>
+    )
+}
 
 function AppNavigator() {
     return(
-        <Stack.Navigator initialRouteName="App">
-            <Stack.Screen name="App" component={AppScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-            <Stack.Screen name="Timeline" component={TimelineScreen} />
-            <Stack.Screen name="List" component={ListScreen} />
-
-    
+        <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="List" component={List} />
+            <Stack.Screen name="TimelineMapTabs" component={TimelineMapTabs} />
         </Stack.Navigator>
     );
 }

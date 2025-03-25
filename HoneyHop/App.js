@@ -6,6 +6,7 @@ import { firebase_auth } from "./src/firebaseConfig";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AppNavigator from './navigation/AppNavigator';
 
 // Import screens
 import Home from './src/screens/Home';
@@ -66,7 +67,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      {/* <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={Home}/>
         <Stack.Screen name="SignUp" component={SignUp}/>
         <Stack.Screen name="Login" component={LogIn}/>
@@ -74,7 +75,8 @@ export default function App() {
         <Stack.Screen name='Timeline' component={TimelineScreen}/>
         <Stack.Screen name='Map' component={Map}/>
         <Stack.Screen name='Plan' component={Plan}/>
-      </Stack.Navigator>
+      </Stack.Navigator> */}
+      <AppNavigator user={user}/>
     </NavigationContainer>
   );
 }
