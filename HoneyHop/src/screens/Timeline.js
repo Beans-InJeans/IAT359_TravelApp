@@ -114,7 +114,9 @@ export default function Timeline({ navigation }) {
             </View>
           </View>
         ))}
-        <TouchableOpacity onPress={() => navigation.navigate('Map')} style={styles.mapButton}>
+        <TouchableOpacity 
+        onPress={() => navigation.navigate('Map')} 
+        style={styles.mapButton}>
           <Text style={styles.mapButtonText}>View on Map</Text>
         </TouchableOpacity>
       </ScrollView>

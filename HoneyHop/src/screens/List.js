@@ -36,6 +36,7 @@ export default function TripPlanner() {
   // Accommodation Details Section
   const [expandedAccommodation, setExpandedAccommodation] = useState(false);
   const [accommodationName, setAccommodationName] = useState('');
+  const [accommodationAddress, setAccommodationAddress] = useState('');
   const [checkInDate, setCheckInDate] = useState(new Date());
   const [checkInTime, setCheckInTime] = useState(new Date());
   const [checkOutDate, setCheckOutDate] = useState(new Date());
@@ -89,6 +90,7 @@ export default function TripPlanner() {
         confirmationNumber,
         terminal,
         accommodationName,
+        accommodationAddress,
         checkInDate,
         checkInTime,
         checkOutDate,
@@ -295,6 +297,15 @@ export default function TripPlanner() {
                 style={styles.inputField}
               />
 
+              {/* Accommodation Address */}
+              <PaperInput
+                label="Accommodation Address"
+                value={accommodationAddress}
+                onChangeText={setAccommodationAddress}
+                mode="outlined"
+                style={styles.inputField}
+              />
+
               {/* Check-In Date */}
               <TouchableOpacity onPress={() => setShowCheckInDatePicker(true)} style={styles.dateInput}>
                 <Text>Check-In Date: {checkInDate.toDateString()}</Text>
@@ -373,7 +384,7 @@ export default function TripPlanner() {
         </PaperButton>
         <PaperButton 
              mode="contained" 
-             onPress={() => navigation.navigate('Timeline')} 
+             onPress={() => navigation.navigate('TimelineMapTabs')} 
         style={styles.saveButton}
 >
          See Itinerary

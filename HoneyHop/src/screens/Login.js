@@ -79,24 +79,24 @@ const Login = ({ navigation }) => {
           createdAt: new Date(),
         });
         console.log("User document created successfully.");
-        navigation.navigate("List");
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [
-        //     { name: 'List' },
-        //     { name: 'TimelineMapTabs' }
-        //   ]
-        // });
+        // navigation.navigate("List");
+        navigation.reset({
+          index: 0,
+          routes: [
+            { name: 'List' },
+            { name: 'TimelineMapTabs' }
+          ]
+        });
       } else {
         console.log("Document data:", docSnap.data());
-        navigation.navigate("TimelineMapTabs");
-        // navigation.reset({
-        //   index: 1,
-        //   routes: [
-        //     { name: 'List' },
-        //     { name: 'TimelineMapTabs' }
-        //   ]
-        // });
+        // navigation.navigate("TimelineMapTabs");
+        navigation.reset({
+          index: 1,
+          routes: [
+            { name: 'List' },
+            { name: 'TimelineMapTabs' }
+          ]
+        });
       }
 
     } catch (error) {
