@@ -237,7 +237,7 @@ export default function TripPlanner() {
 
               {/* From Airport */}
               <PaperInput
-                label="From Airport"
+                label="From Airport Address"
                 value={fromAirport}
                 onChangeText={setFromAirport}
                 mode="outlined"
@@ -246,7 +246,7 @@ export default function TripPlanner() {
 
               {/* To Airport */}
               <PaperInput
-                label="To Airport"
+                label="To Airport Address"
                 value={toAirport}
                 onChangeText={setToAirport}
                 mode="outlined"

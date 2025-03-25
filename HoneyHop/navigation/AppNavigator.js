@@ -9,6 +9,7 @@ import SignUp from '../src/screens/SignUp';
 import Timeline from '../src/screens/Timeline';
 import Map from '../src/screens/Map';
 import List from '../src/screens/List';
+import Plan from '../src/screens/Plan';
 import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
@@ -31,6 +32,7 @@ function AppNavigator() {
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="List" component={List} />
             <Stack.Screen name="TimelineMapTabs" component={TimelineMapTabs} />
+            <Stack.Screen name="Plan" component={Plan} />
         </Stack.Navigator>
     );
 }
