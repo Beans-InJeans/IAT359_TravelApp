@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MapView, { UrlTile, Marker } from 'react-native-maps';
 import { ActivityIndicator } from 'react-native-paper';
@@ -22,18 +22,6 @@ export default function MapScreen() {
   useEffect(() => {
     fetchTripData();
     fetchPlans();
-
-    const fetchAndSetAirportCoords = async () => {
-      const coordinates = await fetchAirportCoordinates();
-      if (coordinates) {
-        setAirportCoordinates(coordinates);  // Set airport coordinates to state
-        setLoading(false);  // Stop loading once coordinates are fetched
-      } else {
-        console.log("No coordinates found for the airport.");
-      }
-    };
-
-    fetchAndSetAirportCoords();  // Call the function to fetch coordinates
   }, []);
 
   useEffect(() => {
@@ -58,6 +46,42 @@ export default function MapScreen() {
 
     fetchCoordinates();
   }, [tripData]);
+
+  useEffect(() => {
+    if (airport) {
+      // Fetch airport coordinates when airport address is available
+      const fetchAndSetAirportCoords = async () => {
+        const coordinates = await fetchAirportCoordinates();
+        if (coordinates) {
+          setAirportCoordinates(coordinates);
+          console.log("Airport coordinates set.");
+          setLoading(false);
+        } else {
+          console.log("No coordinates found for the airport.");
+        }
+      };
+  
+      fetchAndSetAirportCoords();
+    }
+  }, [airport]);
+
+  useEffect(() => {
+    if (accommodation) {
+      // Fetch accommodation coordinates when accommodation address is available
+      const fetchAndSetAccommodationCoords = async () => {
+        const coordinates = await fetchAccommodationCoordinates();
+        if (coordinates) {
+          setAccommodationCoordinates(coordinates);
+          console.log("Accommodation coordinates set.");
+          setLoading(false);
+        } else {
+          console.log("No coordinates found for accommodation.");
+        }
+      };
+  
+      fetchAndSetAccommodationCoords();
+    }
+  }, [accommodation]);
 
   // Get coordinates from city name
   async function fetchCityCoordinates() {
@@ -97,6 +121,27 @@ export default function MapScreen() {
     }
   }
 
+  // Get airport coordinates from airport address
+  async function fetchAccommodationCoordinates() {
+    try {
+      if (airport) {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(accommodation)}`);
+        const data = await response.json();
+
+        if (data.length > 0) {
+          return {
+            latitude: parseFloat(data[0].lat),
+            longitude: parseFloat(data[0].lon),
+          };
+        }
+      } else {
+        console.log("Accommodation address is empty.");
+      }
+    } catch (error) {
+      console.error("Error fetching accommodation coordinates: ", error);
+    }
+  }
+
   async function fetchTripData() {
     try {
       const user = firebase_auth.currentUser;
@@ -116,6 +161,7 @@ export default function MapScreen() {
       setAirport(firstTrip.toAirport);
       console.log("Airport set: ", airport);
       setAccommodation(firstTrip.accommodationAddress);
+      console.log("Accommodation set: ", accommodation);
       
     } catch (error) {
       console.error("Error fetching trips:", error);
