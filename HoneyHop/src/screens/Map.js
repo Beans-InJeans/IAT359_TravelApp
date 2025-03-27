@@ -29,6 +29,7 @@ export default function MapScreen() {
     fetchPlans();     // Food, activity
   }, []);
 
+  // Get city coordinates and set map region
   useEffect(() => {
     const fetchCoordinates = async () => {
       if (tripData?.tripName) {
@@ -52,9 +53,10 @@ export default function MapScreen() {
     fetchCoordinates();
   }, [tripData]);
 
+
+  // Get and set airport coordinates
   useEffect(() => {
     if (airport) {
-      // Fetch airport coordinates when airport address is available
       const fetchAndSetAirportCoords = async () => {
         const coordinates = await fetchAirportCoordinates();
         if (coordinates) {
@@ -70,9 +72,9 @@ export default function MapScreen() {
     }
   }, [airport]);
 
+  // Get and set accommodation coordinates
   useEffect(() => {
     if (accommodation) {
-      // Fetch accommodation coordinates when accommodation address is available
       const fetchAndSetAccommodationCoords = async () => {
         const coordinates = await fetchAccommodationCoordinates();
         if (coordinates) {
@@ -88,7 +90,7 @@ export default function MapScreen() {
     }
   }, [accommodation]);
 
-  // Get coordinates from city name
+  // Fetch coordinates from city name
   async function fetchCityCoordinates() {
     try {
       const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
@@ -105,7 +107,7 @@ export default function MapScreen() {
     }
   }
 
-  // Get airport coordinates from airport address
+  // Fetch airport coordinates from airport address or name
   async function fetchAirportCoordinates() {
     try {
       if (airport) {
@@ -126,7 +128,7 @@ export default function MapScreen() {
     }
   }
 
-  // Get airport coordinates from airport address
+  // Fetch accommodation coordinates from address or name
   async function fetchAccommodationCoordinates() {
     try {
       if (airport) {
@@ -147,6 +149,7 @@ export default function MapScreen() {
     }
   }
 
+  // Fetch all trip data (City, accommodation, flights) from FireStore
   async function fetchTripData() {
     try {
       const user = firebase_auth.currentUser;
@@ -173,6 +176,7 @@ export default function MapScreen() {
     }
   }
 
+  // Fetch all plans (food, acitivities) from FireStore
   function fetchPlans() {
     const user = firebase_auth.currentUser;
     if (!user) return;
@@ -181,6 +185,7 @@ export default function MapScreen() {
     onSnapshot(plansCollectionRef, (snapshot) => {
       const newPlans = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setPlans(newPlans);
+      console.log("Plans set: ", plans);
     });
   }
 
