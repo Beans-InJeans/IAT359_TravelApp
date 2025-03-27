@@ -7,21 +7,26 @@ import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
 
 // Use react-native-maps and OpenStreetMap API to display map
 export default function MapScreen() {
-  // const { city, latitude, longitude, airport } = route.params;  
   const [city, setCity] = useState(null);                   // City name
   const [airport, setAirport] = useState(null);             // To airport address
-  const [airportCoordinates, setAirportCoordinates] = useState(null);
   const [accommodation, setAccommodation] = useState(null); // Accommodation address
+
+  // Coordinates
+  const [airportCoordinates, setAirportCoordinates] = useState(null);
   const [accommodationCoordinates, setAccommodationCoordinates] = useState(null);
   const [region, setRegion] = useState(null);
+
+  // Loading state
   const [loading, setLoading] = useState(true);
 
+  // Data from FireStore
   const [tripData, setTripData] = useState([]);
   const [plans, setPlans] = useState([]);
 
+  // On first render, fetch flight, accommodation, and plan details
   useEffect(() => {
-    fetchTripData();
-    fetchPlans();
+    fetchTripData();  // Flights, accommodation
+    fetchPlans();     // Food, activity
   }, []);
 
   useEffect(() => {
