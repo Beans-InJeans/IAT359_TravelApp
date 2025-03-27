@@ -4,12 +4,21 @@ import {
   KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, StyleSheet 
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { TextInput as PaperInput, Button as PaperButton, List } from 'react-native-paper';
+import {  DefaultTheme, Provider as PaperProvider, TextInput as PaperInput, Button as PaperButton, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { db, firebase_auth } from '../firebaseConfig';
 import { getFirestore, setDoc, doc, collection, getDocs, query, where, addDoc } from "firebase/firestore";
 
 export default function TripPlanner() {
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'black', // This controls the outline color for focused input
+      //background: '#ffe850', // Your background color
+    },
+  };
+
    const navigation = useNavigation(); 
 
   const [tripName, setTripName] = useState('');
@@ -36,7 +45,6 @@ export default function TripPlanner() {
   // Accommodation Details Section
   const [expandedAccommodation, setExpandedAccommodation] = useState(false);
   const [accommodationName, setAccommodationName] = useState('');
-  const [accommodationAddress, setAccommodationAddress] = useState('');
   const [checkInDate, setCheckInDate] = useState(new Date());
   const [checkInTime, setCheckInTime] = useState(new Date());
   const [checkOutDate, setCheckOutDate] = useState(new Date());
@@ -90,7 +98,6 @@ export default function TripPlanner() {
         confirmationNumber,
         terminal,
         accommodationName,
-        accommodationAddress,
         checkInDate,
         checkInTime,
         checkOutDate,
@@ -126,6 +133,7 @@ export default function TripPlanner() {
 
 
   return (
+    <PaperProvider theme={theme}>
     <TouchableWithoutFeedback onPress={closePickers}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
@@ -237,7 +245,7 @@ export default function TripPlanner() {
 
               {/* From Airport */}
               <PaperInput
-                label="From Airport Address"
+                label="From Airport"
                 value={fromAirport}
                 onChangeText={setFromAirport}
                 mode="outlined"
@@ -246,7 +254,7 @@ export default function TripPlanner() {
 
               {/* To Airport */}
               <PaperInput
-                label="To Airport Address"
+                label="To Airport"
                 value={toAirport}
                 onChangeText={setToAirport}
                 mode="outlined"
@@ -293,15 +301,6 @@ export default function TripPlanner() {
                 label="Accommodation Name"
                 value={accommodationName}
                 onChangeText={setAccommodationName}
-                mode="outlined"
-                style={styles.inputField}
-              />
-
-              {/* Accommodation Address */}
-              <PaperInput
-                label="Accommodation Address"
-                value={accommodationAddress}
-                onChangeText={setAccommodationAddress}
                 mode="outlined"
                 style={styles.inputField}
               />
@@ -384,7 +383,7 @@ export default function TripPlanner() {
         </PaperButton>
         <PaperButton 
              mode="contained" 
-             onPress={() => navigation.navigate('TimelineMapTabs')} 
+             onPress={() => navigation.navigate('Timeline')} 
         style={styles.saveButton}
 >
          See Itinerary
@@ -392,6 +391,7 @@ export default function TripPlanner() {
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
+    </PaperProvider>
   );
 }
 
@@ -415,6 +415,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     marginBottom: 15,
+    backgroundColor: '#fffdf3',
   },
   dateInput: {
     padding: 10,
@@ -423,6 +424,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#ddd',
+    backgroundColor: '#fffdf3',
   },
   accordion: {
     backgroundColor: 'white',
@@ -449,8 +451,11 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   saveButton: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
     padding: 8,
+    width: "100%",
+    borderRadius: 8,
+    backgroundColor: '#f75b00',
   },
 });
