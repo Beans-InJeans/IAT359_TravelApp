@@ -4,9 +4,18 @@ import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebase_auth } from '../firebaseConfig';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
-import { TextInput as PaperInput, Button as PaperButton } from 'react-native-paper';
+import { DefaultTheme, Provider as PaperProvider, TextInput as PaperInput, Button as PaperButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as LocalAuthentication from 'expo-local-authentication';
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'black', // This controls the outline color for focused input
+    background: '#ffe850', // Your background color
+  },
+};
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -105,8 +114,9 @@ const Login = ({ navigation }) => {
   };
   
   return (
+    <PaperProvider theme={theme}>
     <KeyboardAvoidingView 
-      style={GlobalStyles.container}
+      style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <PaperInput
@@ -137,20 +147,30 @@ const Login = ({ navigation }) => {
         Login
       </PaperButton>
     </KeyboardAvoidingView>
+    </PaperProvider>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffe850',
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   input: {
     marginBottom: 15,
     marginLeft: 50,
     marginRight: 50,
     width: "80%",
+    backgroundColor: '#fef3ad',
   },
   button: {
     marginTop: 10,
     width: "80%",
     borderRadius: 8,
+    backgroundColor: '#f75b00',
   },
   buttonText: {
     fontSize: 16,
