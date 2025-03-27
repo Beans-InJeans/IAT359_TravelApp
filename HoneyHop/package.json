@@ -16,6 +16,8 @@
     "@react-navigation/native": "^7.0.15",
     "@react-navigation/stack": "^7.1.2",
     "expo": "~52.0.37",
+    "expo-dev-client": "~5.0.14",
+    "expo-font": "~13.0.4",
     "expo-local-authentication": "~15.0.2",
     "expo-location": "^18.0.8",
     "expo-secure-store": "~14.0.1",
@@ -33,10 +35,9 @@
     "react-native-reanimated": "^3.17.1",
     "react-native-safe-area-context": "^5.3.0",
     "react-native-screens": "^4.9.2",
+    "react-native-svg": "^15.11.2",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-web": "~0.19.13",
-    "expo-dev-client": "~5.0.14",
-    "expo-font": "~13.0.4"
+    "react-native-web": "~0.19.13"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
