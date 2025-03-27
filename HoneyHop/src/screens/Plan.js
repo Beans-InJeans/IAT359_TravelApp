@@ -3,7 +3,7 @@ import {
   View, Text, Keyboard, TouchableOpacity, 
   KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, StyleSheet 
 } from "react-native";
-import { TextInput as PaperInput, Button as PaperButton } from "react-native-paper";
+import {  DefaultTheme, Provider as PaperProvider, TextInput as PaperInput, Button as PaperButton, List } from 'react-native-paper';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { db } from '../firebaseConfig';
@@ -11,6 +11,16 @@ import { collection, addDoc, doc } from "firebase/firestore";
 import { firebase_auth } from "../firebaseConfig"; // Ensure Firebase auth is properly imported
 
 export default function Plan() {
+
+   const theme = {
+      ...DefaultTheme,
+      colors: {
+        ...DefaultTheme.colors,
+        primary: 'black', // This controls the outline color for focused input
+        //background: '#ffe850', // Your background color
+      },
+    };
+
   const navigation = useNavigation();
 
   // State for inputs
@@ -69,6 +79,7 @@ export default function Plan() {
   };
 
   return (
+    <PaperProvider theme={theme}>
     <TouchableWithoutFeedback onPress={closePickers}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"} 
@@ -177,6 +188,7 @@ export default function Plan() {
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
+    </PaperProvider>
   );
 }
 
@@ -211,6 +223,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     marginBottom: 15,
+    backgroundColor: '#fffdf3',
   },
   textArea: {
     height: 100,
@@ -239,11 +252,12 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   saveButton: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
     padding: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    borderRadius: 8,
+    backgroundColor: '#f75b00',
   }
 });
 
