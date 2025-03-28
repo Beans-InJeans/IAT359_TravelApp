@@ -3,8 +3,24 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-nati
 import { MaterialCommunityIcons } from '@expo/vector-icons'; // Importing MaterialCommunityIcons
 import { firebase_auth, db } from '../firebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
+import Svg, { Polygon } from 'react-native-svg';
 
 export default function Timeline({ navigation }) {
+  const Hexagon = () => (
+    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Svg height="40" width="40" viewBox="0 0 100 100">
+        <Polygon
+          points="50,5 95,25 95,75 50,95 5,75 5,25"
+          fill="#FFE850"
+          stroke="black"
+          strokeWidth="8"
+          transform="rotate(90 50 50)"
+        />
+      </Svg>
+    </View>
+  );
+
+  
   const [tripData, setTripData] = useState([]);
   const [plans, setPlans] = useState([]);
 
@@ -77,12 +93,17 @@ export default function Timeline({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>{tripData?.tripName || "Loading..."}</Text>
       <Text style={styles.dateRange}>{formatDate(tripData?.startDate)} - {formatDate(tripData?.endDate)}</Text>
-
+  
       <ScrollView style={styles.timeline}>
+        {/* Departure Flight */}
         <View style={styles.timelineEvent}>
+        <View style={styles.timelineLine} /> {/* Timeline line */}
           <View style={[styles.timelineIconContainer, styles.flight]}>
-            <MaterialCommunityIcons name="airplane-takeoff" size={24} color="white" />
-          </View>
+            <Hexagon />
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name="airplane-takeoff" size={24} color="black" />
+            </View> {/* Closing the iconContainer View here */}
+          </View> {/* Closing the timelineIconContainer View here */}
           <View style={styles.eventContent}>
             <Text style={styles.eventTitle}>Departure Flight</Text>
             <Text style={styles.eventDate}>{formatDate(tripData?.departureDate)} {formatTime(tripData?.departureTime)}</Text>
@@ -91,23 +112,33 @@ export default function Timeline({ navigation }) {
             )}
           </View>
         </View>
-
+  
+        {/* Hotel Check-In */}
         <View style={styles.timelineEvent}>
+        <View style={styles.timelineLine} /> {/* Timeline line */}
           <View style={[styles.timelineIconContainer, styles.hotelCheckIn]}>
-            <MaterialCommunityIcons name="bed" size={24} color="white" />
-          </View>
+            <Hexagon />
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name="bed" size={24} color="black" />
+            </View> {/* Closing the iconContainer View here */}
+          </View> {/* Closing the timelineIconContainer View here */}
           <View style={styles.eventContent}>
             <Text style={styles.eventTitle}>Check-In at {tripData?.accommodationName || "No Accommodation"}</Text>
             <Text style={styles.eventDescription}>{tripData?.accommodationAddress || "No Address"}</Text>
             <Text style={styles.eventDate}>{formatDate(tripData?.checkInDate)} {formatTime(tripData?.checkInTime)}</Text>
           </View>
         </View>
-
+  
+        {/* Activity */}
         {plans.map((plan) => (
           <View key={plan.id} style={styles.timelineEvent}>
+            <View style={styles.timelineLine} /> {/* Timeline line */}
             <View style={[styles.timelineIconContainer, styles.activity]}>
-              <MaterialCommunityIcons name={getPlanIcon(plan.category)} size={24} color="white" />
-            </View>
+              <Hexagon />
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons name={getPlanIcon(plan.category)} size={24} color="black" />
+              </View> {/* Closing the iconContainer View here */}
+            </View> {/* Closing the timelineIconContainer View here */}
             <View style={styles.eventContent}>
               <Text style={styles.eventTitle}>{plan.activityTitle}</Text>
               <Text style={styles.eventDate}>{formatDate(plan.date)} {formatTime(plan.time)}</Text>
@@ -115,19 +146,21 @@ export default function Timeline({ navigation }) {
             </View>
           </View>
         ))}
+  
+        {/* Optional Map Button */}
         {/* <TouchableOpacity 
-        onPress={() => navigation.navigate('Map')} 
-        style={styles.mapButton}>
+          onPress={() => navigation.navigate('Map')} 
+          style={styles.mapButton}>
           <Text style={styles.mapButtonText}>View on Map</Text>
         </TouchableOpacity> */}
       </ScrollView>
-
+  
       <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('Plan')}>
         <MaterialCommunityIcons name="plus" size={24} color="white" />
       </TouchableOpacity>
     </View>
   );
-}
+}  
 
 const styles = StyleSheet.create({
   container: {
@@ -157,26 +190,18 @@ const styles = StyleSheet.create({
   timelineIconContainer: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    //borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
+    
     zIndex: 2,
-  },
-  flight: {
-    backgroundColor: '#3498db',
-  },
-  hotelCheckIn: {
-    backgroundColor: '#9b59b6',
-  },
-  activity: {
-    backgroundColor: '#f39c12',
   },
   eventContent: {
     marginLeft: 50,
     paddingLeft: 10,
-    borderLeftWidth: 2,
-    borderLeftColor: '#ddd',
+    //borderLeftWidth: 2,
+    //borderLeftColor: '#ddd',
     paddingTop: 10,
   },
   eventTitle: {
@@ -197,7 +222,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 30,
-    backgroundColor: '#3498db',
+    backgroundColor: '#F75B00',
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -208,4 +233,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
   },
+  iconContainer: {
+    position: 'absolute', // Position the icon inside the hexagon
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1, // Ensure the icon is above the hexagon
+  },
+  timelineLine: {
+    width: 4, // Width of the line
+    height: '140%', // Full height between the events
+    backgroundColor: 'black', // Black color for the line
+    position: 'absolute',
+    top: 40, // Adjust the top to start from the center of the hexagon
+    left: '5%',
+    //transform: [{ translateX: -1 }], // Center the line
+    zIndex: 0, // Make sure it’s under the icon
+  },  
 });

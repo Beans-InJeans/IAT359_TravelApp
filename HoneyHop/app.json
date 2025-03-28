@@ -39,7 +39,8 @@
         {
           "faceIDPermission": "Allow device to use Face ID."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "extra": {
       "eas": {
