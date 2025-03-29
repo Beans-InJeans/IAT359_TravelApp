@@ -4,6 +4,8 @@ import MapView, { UrlTile, Marker } from 'react-native-maps';
 import { ActivityIndicator } from 'react-native-paper';
 import { firebase_auth, db } from '../firebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
+import * as Location from 'expo-location';  // For getting current location
+import axios from 'axios';                  // For HTTP requests
 
 // Use react-native-maps and OpenStreetMap API to display map
 export default function MapScreen() {
@@ -12,6 +14,10 @@ export default function MapScreen() {
   const [accommodation, setAccommodation] = useState(null); // Accommodation address
   const [planNames, setPlanNames] = useState([]);           // Plan name
   const [planLocations, setPlanLocations] = useState([]);   // Plan address
+
+  // For current location
+  const [location, setLocation] = useState(null);
+  const API_KEY = '86d37fb6c5548c2258c7beade20375f9';
 
   // Coordinates
   const [airportCoordinates, setAirportCoordinates] = useState(null);
@@ -34,6 +40,28 @@ export default function MapScreen() {
   useEffect(() => {
     fetchTripData();  // Flights, accommodation
     fetchPlans();     // Food, activity
+
+    /* 
+     * Gets device location
+     * This is a self-executing async function. It runs as soon as it's defined.
+     */
+    (async () => {
+      // Asks user for permission to access location
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      // In case the user denies access
+      if (status !== 'granted') {
+        console.log("Location permission granted.")
+        return;
+      } else {
+        console.log("Location permission denied.");
+      }
+
+      // Gets current longitude and latitude using expo-location library
+      // Note: Android Studio provides a mock location
+      let loc = await Location.getCurrentPositionAsync({});
+      console.log("Current location: ", loc);
+      
+    })();
   }, []);
 
   // Get city coordinates and set map region
