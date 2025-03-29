@@ -72,7 +72,6 @@ export default function MapScreen() {
       const fetchAndSetAirportCoords = async () => {
         const coordinates = await fetchAirportCoordinates();
         if (coordinates) {
-          console.log ("Airport coordinates should be set to: ", coordinates);
           setAirportCoordinates(coordinates);
           console.log("Airport coordinates set: ", airportCoordinates);
           setIsAirportLoading(false);
