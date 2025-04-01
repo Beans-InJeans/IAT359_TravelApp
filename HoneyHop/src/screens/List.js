@@ -14,8 +14,7 @@ export default function TripPlanner() {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      primary: 'black', // This controls the outline color for focused input
-      //background: '#ffe850', // Your background color
+      primary: 'black', 
     },
   };
 
@@ -23,13 +22,13 @@ export default function TripPlanner() {
 
   const [tripName, setTripName] = useState('');
   
-  // Date Pickers
+  //date pickers
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
-  // Flight Details Section
+  //flight details section
   const [expandedFlight, setExpandedFlight] = useState(false);
   const [departureDate, setDepartureDate] = useState(new Date());
   const [departureTime, setDepartureTime] = useState(new Date());
@@ -46,7 +45,7 @@ export default function TripPlanner() {
   const [confirmationNumber, setConfirmationNumber] = useState('');
   const [terminal, setTerminal] = useState('');
 
-  // Accommodation Details Section
+  //accommodation details section
   const [expandedAccommodation, setExpandedAccommodation] = useState(false);
   const [accommodationName, setAccommodationName] = useState('');
   const [checkInDate, setCheckInDate] = useState(new Date());
@@ -57,10 +56,8 @@ export default function TripPlanner() {
   const [showCheckOutDatePicker, setShowCheckOutDatePicker] = useState(false);
   const [confirmationAccommodationNumber, setConfirmationAccommodationNumber] = useState('');
 
-  // // Itinerary Section
-  // const [itinerary, setItinerary] = useState('');
   
-  // For closing the pickers when they pop out
+  //closing the pickers when they pop out
   const closePickers = () => {
     setShowStartDatePicker(false);
     setShowEndDatePicker(false);
@@ -74,23 +71,25 @@ export default function TripPlanner() {
     Keyboard.dismiss();
   };
 
-  // Save trip function
+
   const saveTrip = async () => {
+    //check if firebase auth is initialised
     if (!firebase_auth) {
       console.log("Firebase Auth not initialized.");
       return;
   }
     console.log("SaveTrip function called");
 
-    // Ensure firebase_auth.currentUser is not null or undefined
+    //get the current user
     const user = firebase_auth.currentUser;
     if (!user) {
         console.log("No user is logged in.");
-        return; // Exit early if no user is logged in
+        return; 
     }
 
     console.log("Current user UID: ", user.uid);
 
+    //define the trip details object
     const tripDetails = {
         tripName,
         startDate,
@@ -113,13 +112,14 @@ export default function TripPlanner() {
     };
 
     try {
-        // Get a reference to the user's document using the UID
+        //get a reference to the user's document using the UID
         const userRef = doc(db, 'users', user.uid);
 
         console.log("Checking trips collection under userRef:", userRef);
 
-        // Get a reference to the 'trips' collection under the user
+        //get a reference to the 'trips' collection under the user
         const tripsCollectionRef = collection(userRef, 'trips');
+        //fetch all existing trips under the user
         const tripsSnapshot = await getDocs(tripsCollectionRef);
 
         if (tripsSnapshot.empty) {
@@ -131,7 +131,7 @@ export default function TripPlanner() {
             });
         }
 
-        // Add the trip details document to the 'trips' collection
+        //add the trip details document to the 'trips' collection
         await addDoc(tripsCollectionRef, tripDetails);
         console.log("Trip details saved successfully.");
     } catch (e) {
