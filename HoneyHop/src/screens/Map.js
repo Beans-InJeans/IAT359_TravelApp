@@ -371,6 +371,7 @@ export default function MapScreen() {
           <Callout>
             <Text style={styles.calloutHeader}>{airport}</Text>
             <Text>{`Arrival date: ${formatDate(tripData?.departureDate)}`}</Text>
+            <Text>{`Departure date: ${formatDate(tripData?.returnDate)}`}</Text>
           </Callout>
         </Marker>
       )}
@@ -406,6 +407,7 @@ export default function MapScreen() {
               <Text style={styles.calloutHeader}>{planNames[index]}</Text>
               <Text>{`Location: ${plans[index]?.location}`}</Text>
               <Text>{`Category: ${plans[index]?.category}`}</Text>
+              <Text>{`Notes: ${plans[index]?.notes}`}</Text>
             </Callout>
           </Marker>
         ))
