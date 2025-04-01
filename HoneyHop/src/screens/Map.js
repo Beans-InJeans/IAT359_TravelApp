@@ -1,6 +1,6 @@
 import React, { useState, useEffect, use } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import MapView, { UrlTile, Marker } from 'react-native-maps';
+import MapView, { UrlTile, Marker, Callout } from 'react-native-maps';
 import { ActivityIndicator } from 'react-native-paper';
 import { firebase_auth, db } from '../firebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
@@ -155,6 +155,14 @@ export default function MapScreen() {
       fetchAndSetPlanCoords();
     }
   }, [planLocations]);
+
+  // Function to format date for text
+  function formatDate(date) {
+    if (!date) return "No Date";
+    if (date.seconds) date = new Date(date.seconds * 1000);
+    else date = new Date(date);
+    return date.toDateString();
+  }
 
   // A simple function that enforces a delay
   const delay = ms => new Promise(resolve => {
@@ -371,7 +379,14 @@ export default function MapScreen() {
             longitude: accommodationCoordinates.longitude,
           }}
           title={accommodation} // Set the title for the marker (accommodation name)
-        />
+        >
+          <Callout>
+            <Text style={styles.calloutHeader}>{accommodation}</Text>
+            <Text>{`Check in: ${formatDate(tripData?.checkInDate)}`}</Text>
+            <Text>{`Check out: ${formatDate(tripData?.checkOutDate)}`}</Text>
+          </Callout>
+       
+        </Marker>
       )}
 
       {planCoordinates && planCoordinates.length > 0 && planNames && planNames.length > 0 && (
@@ -408,4 +423,7 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
+  calloutHeader: {
+    fontWeight: 'bold',
+  }
 });
