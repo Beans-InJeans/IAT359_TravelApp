@@ -124,8 +124,8 @@ export default function Timeline({ navigation }) {
           </View> {/* Closing the timelineIconContainer View here */}
           <View style={styles.eventContent}>
             <Text style={styles.eventTitle}>Check-In at {tripData?.accommodationName || "No Accommodation"}</Text>
-            <Text style={styles.eventDescription}>{tripData?.accommodationAddress || "No Address"}</Text>
             <Text style={styles.eventDate}>{formatDate(tripData?.checkInDate)} {formatTime(tripData?.checkInTime)}</Text>
+            <Text style={styles.eventDescription}>{tripData?.accommodationAddress || "No Address"}</Text>
           </View>
         </View>
   
