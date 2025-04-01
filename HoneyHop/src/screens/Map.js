@@ -15,17 +15,13 @@ export default function MapScreen() {
   const [planNames, setPlanNames] = useState([]);           // Plan name
   const [planLocations, setPlanLocations] = useState([]);   // Plan address
 
-  // For current location
-  const [location, setLocation] = useState(null);
-  const API_KEY = '86d37fb6c5548c2258c7beade20375f9';
-
   // Coordinates
   const [airportCoordinates, setAirportCoordinates] = useState(null);
   const [accommodationCoordinates, setAccommodationCoordinates] = useState(null);
   const [planCoordinates, setPlanCoordinates] = useState([]);
-  const [region, setRegion] = useState(null);
   const [currentLoc, setCurrentLoc] = useState([]);
-
+  const [region, setRegion] = useState(null);
+  
   // Loading states
   const [isCityLoading, setIsCityLoading] = useState(true);
   const [isAirportLoading, setIsAirportLoading] = useState(true);
