@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import GlobalStyles from '../../styles/GlobalStyles';
 import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebase_auth } from '../firebaseConfig';
@@ -8,24 +7,25 @@ import { DefaultTheme, Provider as PaperProvider, TextInput as PaperInput, Butto
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as LocalAuthentication from 'expo-local-authentication';
 
+//sets theme for the app, defining primary colours
 const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: 'black', // This controls the outline color for focused input
-    background: '#ffe850', // Your background color
+    primary: 'black', 
+    background: '#ffe850', 
   },
 };
 
 const Login = ({ navigation }) => {
+
+  //state hooks for email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  /* 
-   * Gets email from Async Storage if authenticated through biometrics
-   * Basically an autofill function
-  */
   useEffect(() => {
+
+    //function to retrieve stored email and password using biometric authentication
     const getEmailFromStore = async () => {
       try {
         const hasBiometrics = await LocalAuthentication.hasHardwareAsync();
@@ -62,12 +62,6 @@ const Login = ({ navigation }) => {
     getEmailFromStore();
   }, []);
 
-  /*
-   * Handles login and authentication when the login button is pressed.
-   * Uses firebase to authenticate
-   * Uses firestore to get user info
-   * Uses Async Storage to save info for future logins (Autofill) 
-   */
   const handleLogin = async () => {  
     try {
       const userCredential = await signInWithEmailAndPassword(firebase_auth, email, password);
@@ -78,9 +72,11 @@ const Login = ({ navigation }) => {
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
 
+      //store login credentials locally for future biometric authentication
       await AsyncStorage.setItem("userEmail", email);
       await AsyncStorage.setItem("userPassword", password);
 
+      //if user document does not exist, create a new one
       if (!docSnap.exists()) {
         await setDoc(docRef, {
           email: user.email,
@@ -88,7 +84,6 @@ const Login = ({ navigation }) => {
           createdAt: new Date(),
         });
         console.log("User document created successfully.");
-        // navigation.navigate("List");
         navigation.reset({
           index: 0,
           routes: [
@@ -97,7 +92,6 @@ const Login = ({ navigation }) => {
         });
       } else {
         console.log("Document data:", docSnap.data());
-        // navigation.navigate("TimelineMapTabs");
         navigation.reset({
           index: 1,
           routes: [
