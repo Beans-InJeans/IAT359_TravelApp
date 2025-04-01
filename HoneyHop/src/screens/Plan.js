@@ -8,7 +8,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { db } from '../firebaseConfig';
 import { collection, addDoc, doc } from "firebase/firestore";
-import { firebase_auth } from "../firebaseConfig"; // Ensure Firebase auth is properly imported
+import { firebase_auth } from "../firebaseConfig";
 
 export default function Plan() {
 
@@ -16,20 +16,19 @@ export default function Plan() {
       ...DefaultTheme,
       colors: {
         ...DefaultTheme.colors,
-        primary: 'black', // This controls the outline color for focused input
-        //background: '#ffe850', // Your background color
+        primary: 'black', 
       },
     };
 
   const navigation = useNavigation();
 
-  // State for inputs
+  //state for inputs
   const [category, setCategory] = useState("food");
-  const [activityTitle, setActivityTitle] = useState(""); // New Input Field
+  const [activityTitle, setActivityTitle] = useState(""); 
   const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
 
-  // Date & Time picker states
+  //date & Time picker states
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [time, setTime] = useState(new Date());
@@ -71,7 +70,7 @@ export default function Plan() {
         await addDoc(plansCollectionRef, planDetails);
         console.log("Plan details saved successfully.");
 
-        // Navigate to Timeline screen after saving
+        //navigate to Timeline screen after saving
         navigation.navigate('TimelineMapTabs', { planData: planDetails });
     } catch (e) {
         console.error("Error adding document: ", e);
