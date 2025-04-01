@@ -4,51 +4,46 @@ import MapView, { UrlTile, Marker, Callout } from 'react-native-maps';
 import { ActivityIndicator } from 'react-native-paper';
 import { firebase_auth, db } from '../firebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
-import * as Location from 'expo-location';  // For getting current location
-import axios from 'axios';                  // For HTTP requests
+import * as Location from 'expo-location';             
 
-// Use react-native-maps and OpenStreetMap API to display map
+//use react-native-maps and OpenStreetMap API to display map
 export default function MapScreen() {
-  const [city, setCity] = useState(null);                   // City name
-  const [airport, setAirport] = useState(null);             // To airport address
-  const [accommodation, setAccommodation] = useState(null); // Accommodation address
-  const [planNames, setPlanNames] = useState([]);           // Plan name
-  const [planLocations, setPlanLocations] = useState([]);   // Plan address
+  const [city, setCity] = useState(null);                  
+  const [airport, setAirport] = useState(null);            
+  const [accommodation, setAccommodation] = useState(null); 
+  const [planNames, setPlanNames] = useState([]);       
+  const [planLocations, setPlanLocations] = useState([]);   
 
-  // Coordinates
+  //coordinates
   const [airportCoordinates, setAirportCoordinates] = useState(null);
   const [accommodationCoordinates, setAccommodationCoordinates] = useState(null);
   const [planCoordinates, setPlanCoordinates] = useState([]);
   const [currentLoc, setCurrentLoc] = useState([]);
   const [region, setRegion] = useState(null);
   
-  // Loading states
+  //loading states
   const [isCityLoading, setIsCityLoading] = useState(true);
   const [isAirportLoading, setIsAirportLoading] = useState(true);
   const [isAccommodationLoading, setIsAccommodationLoading] = useState(true);
   const [isPlansLoading, setIsPlansLoading] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  // Data from FireStore
+  //data from FireStore
   const [tripData, setTripData] = useState([]);
   const [plans, setPlans] = useState([]);
 
-  // On first render, fetch flight, accommodation, and plan details
+  //on first render, fetch flight, accommodation, and plan details
   useEffect(() => {
-    fetchTripData();  // Flights, accommodation
-    fetchPlans();     // Food, activity
+    fetchTripData(); 
+    fetchPlans();    
   }, []);
 
-  // On first render, get current location and set it
+  //on first render, get current location and set it
   useEffect(() => {
-    /* 
-    * Gets device location
-    * This is a self-executing async function. It runs as soon as it's defined.
-    */
+
       (async () => {
-        // Asks user for permission to access location
+        //asks user for permission to access location
         let { status } = await Location.requestForegroundPermissionsAsync();
-        // In case the user denies access
         if (status !== 'granted') {
           console.log("Location permission denied.")
           return;
@@ -56,19 +51,17 @@ export default function MapScreen() {
   
         console.log("Location permission granted.");
   
-        // Gets current longitude and latitude using expo-location library
-        // Note: Android Studio provides a mock location
+        //gets current longitude and latitude using expo-location library
         let loc = await Location.getCurrentPositionAsync({});
         console.log("Current location: ", loc);
         setCurrentLoc(loc);
       })();
   }, [])
 
-  // Get city coordinates and set map region
+  //get city coordinates and set map region
   useEffect(() => {
     const fetchCoordinates = async () => {
       if (tripData?.tripName && !region) {
-        // Get the coordinates from city name
         const coordinates = await fetchCityCoordinates(tripData.tripName);
         if (coordinates) {
           console.log("City coordinates:", coordinates);
@@ -78,7 +71,7 @@ export default function MapScreen() {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           });
-          setIsCityLoading(false);  // Set loading to false once the region is set
+          setIsCityLoading(false); 
           checkLoadingStates();
         } else {
           console.log("City coordinates not found.");
@@ -86,16 +79,16 @@ export default function MapScreen() {
       }
     };
 
-    // Prevent unnecessary calls if region already set
+    //prevent unnecessary calls if region already set
     if (tripData?.tripName) {
       fetchCoordinates();
     }
   }, [tripData]);
 
 
-  // Get and set airport coordinates
+  //get and set airport coordinates
   useEffect(() => {
-    // Only fetch if airport coordinates aren't already set
+    //only fetch if airport coordinates aren't already set
     if (airport) {
       const fetchAndSetAirportCoords = async () => {
         const coordinates = await fetchAirportCoordinates();
@@ -113,9 +106,9 @@ export default function MapScreen() {
     }
   }, [airport]);
 
-  // Get and set accommodation coordinates
+  //get and set accommodation coordinates
   useEffect(() => {
-    // Only fetch if accommodation coordinates aren't already set
+    //only fetch if accommodation coordinates aren't already set
     if (accommodation) {
       const fetchAndSetAccommodationCoords = async () => {
         const coordinates = await fetchAccommodationCoordinates();
@@ -133,7 +126,7 @@ export default function MapScreen() {
     }
   }, [accommodation]);
 
-  // // Get and set plan coordinates
+  //get and set plan coordinates
   useEffect(() => {
     if (planLocations.length > 0 && planCoordinates.length === 0) {
       const fetchAndSetPlanCoords = async () => {
@@ -152,7 +145,7 @@ export default function MapScreen() {
     }
   }, [planLocations]);
 
-  // Function to format date for text
+  //function to format date for text
   function formatDate(date) {
     if (!date) return "No Date";
     if (date.seconds) date = new Date(date.seconds * 1000);
@@ -160,20 +153,20 @@ export default function MapScreen() {
     return date.toDateString();
   }
 
-  // A simple function that enforces a delay
+  //a simple function that enforces a delay
   const delay = ms => new Promise(resolve => {
     console.log(`Delaying for ${ms}ms`);
     setTimeout(resolve, ms);
   });
 
-  // Set loading to false after all data is fetched
+  //set loading to false after all data is fetched
   const checkLoadingStates = () => {
     console.log("City loading: ", isCityLoading);
     console.log("Airport loading: ", isAirportLoading);
     console.log("Accommodation loading: ", isAccommodationLoading);
     console.log("Plans loading: ", isPlansLoading);
 
-    // Read the current state using the callback form
+    //read the current state using the callback form
     setLoading(
       !isCityLoading &&
       !isAirportLoading &&
@@ -182,10 +175,9 @@ export default function MapScreen() {
     );
   };
 
-  // Fetch coordinates from city name
+  //fetch coordinates from city name
   async function fetchCityCoordinates() {
     try {
-      // await delay(1000);
       const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
       const data = await response.json();
 
@@ -201,11 +193,10 @@ export default function MapScreen() {
     }
   }
 
-  // Fetch airport coordinates from airport address or name
+  //fetch airport coordinates from airport address or name
   async function fetchAirportCoordinates() {
     try {
       if (airport) {
-        // await delay(1000);
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(airport)}`);
         const data = await response.json();
 
@@ -224,11 +215,10 @@ export default function MapScreen() {
     }
   }
 
-  // Fetch accommodation coordinates from address or name
+  //fetch accommodation coordinates from address or name
   async function fetchAccommodationCoordinates() {
     try {
       if (accommodation) {
-        // await delay(1000);
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(accommodation)}`);
         const data = await response.json();
 
@@ -247,13 +237,13 @@ export default function MapScreen() {
     }
   }
 
-  // // Fetch plan coordinates from address or name
+  //fetch plan coordinates from address or name
   async function fetchPlanCoordinates() {
     let coordinates = [];
     for (const loc of planLocations) {
       try {
         if (loc) {
-          // Wait for the delay before making the fetch call
+          //wait for the delay before making the fetch call
           await delay(1000);
           const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(loc)}`);
           const data = await response.json();
@@ -277,7 +267,7 @@ export default function MapScreen() {
     return coordinates;
   }
 
-  // Fetch all trip data (City, accommodation, flights) from FireStore
+  //fetch all trip data (City, accommodation, flights) from FireStore
   async function fetchTripData() {
     try {
       const user = firebase_auth.currentUser;
@@ -304,7 +294,7 @@ export default function MapScreen() {
     }
   }
 
-  // // Fetch all plans (food, acitivities) from FireStore
+  //fetch all plans (food, acitivities) from FireStore
   function fetchPlans() {
     const user = firebase_auth.currentUser;
     if (!user) return;
@@ -313,24 +303,24 @@ export default function MapScreen() {
     onSnapshot(plansCollectionRef, (snapshot) => {
       const newPlans = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-      // Get the object array from FireStore and put it into plans
+      //get the object array from FireStore and put it into plans
       console.log("Plans fetched: ", newPlans);
       setPlans(newPlans);
 
-      // Get the plan name from each plan in the array and put it in planNames
+      //get the plan name from each plan in the array and put it in planNames
       const names = newPlans.map((plan) => plan.activityTitle); 
       setPlanNames(names);
 
-      // Get the plan location from each plan in the array and put it in planLocations
+      //get the plan location from each plan in the array and put it in planLocations
       const locations = newPlans.map((plan) => plan.location); 
       setPlanLocations(locations);
       
-      // Check names and locations
+      //check names and locations
       console.log("Plan names and locations set: ", { names, locations });
     });
   }
 
-  // Check loading states. If loading, show loading icon.
+  //check loading states. If loading, show loading icon.
   if (loading || !region) {
     console.log ("Region state: ", region);
     console.log("Loading state: ", loading);
@@ -401,12 +391,12 @@ export default function MapScreen() {
       {planCoordinates && planCoordinates.length > 0 && planNames && planNames.length > 0 && (
         planCoordinates.map((coords, index) => (
           <Marker
-            key={index} // Ensure unique key for each Marker
+            key={index} //ensure unique key for each Marker
             coordinate={{
               latitude: coords.latitude,
               longitude: coords.longitude,
             }}
-            title={planNames[index]} // Use the title from the planNames array
+            title={planNames[index]} //use the title from the planNames array
           >
             <Callout>
               <Text style={styles.calloutHeader}>{planNames[index]}</Text>
