@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebase_auth } from "../firebaseConfig";
-import GlobalStyles from "../../styles/GlobalStyles";
 import { DefaultTheme, Provider as PaperProvider, TextInput as PaperInput, Button as PaperButton } from 'react-native-paper';
 
 const theme = {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      primary: 'black', // This controls the outline color for focused input
-      background: '#ffe850', // Your background color
+      primary: 'black',
+      background: '#ffe850', 
     },
   };
 
@@ -21,11 +20,12 @@ export default function SignUp({ navigation }) {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
 
-    // Use firebase to create login with email and password
     const handleSignUp = async () => {
         try {
+            //create new user with email and password
             await createUserWithEmailAndPassword(firebase_auth, email, password);
             console.log("User created successfully.");
+            //navigate to login screen after successful sign-up
             navigation.navigate("Login");
         } catch (error) {
             console.error(error.message);
