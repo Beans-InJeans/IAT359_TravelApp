@@ -286,7 +286,7 @@ export default function MapScreen() {
       console.log("city set: ", city);
       setAirport(firstTrip.toAirport);
       console.log("Airport set: ", airport);
-      setAccommodation(firstTrip.accommodationAddress);
+      setAccommodation(firstTrip.accommodationName);
       console.log("Accommodation set: ", accommodation);
       
     } catch (error) {
