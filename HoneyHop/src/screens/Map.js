@@ -330,6 +330,7 @@ export default function MapScreen() {
     });
   }
 
+  // Check loading states. If loading, show loading icon.
   if (loading || !region) {
     console.log ("Region state: ", region);
     console.log("Loading state: ", loading);
@@ -353,6 +354,7 @@ export default function MapScreen() {
           zIndex={1}
         />
 
+        {/* City marker */}
         <Marker
           coordinate={{ 
             latitude: region.latitude, 
@@ -360,6 +362,7 @@ export default function MapScreen() {
           title={city}
         />
 
+      {/* Airport marker with arrival and departure date */}
       {airportCoordinates && (
         <Marker
           coordinate={{
@@ -371,10 +374,12 @@ export default function MapScreen() {
           <Callout>
             <Text style={styles.calloutHeader}>{airport}</Text>
             <Text>{`Arrival date: ${formatDate(tripData?.departureDate)}`}</Text>
+            <Text>{`Departure date: ${formatDate(tripData?.returnDate)}`}</Text>
           </Callout>
         </Marker>
       )}
 
+      {/* Accommodation marker with check in and out date*/}
       {accommodationCoordinates && (
         <Marker
           coordinate={{
@@ -392,6 +397,7 @@ export default function MapScreen() {
         </Marker>
       )}
 
+      {/* Plan markers with location, category, and notes */}
       {planCoordinates && planCoordinates.length > 0 && planNames && planNames.length > 0 && (
         planCoordinates.map((coords, index) => (
           <Marker
@@ -406,11 +412,13 @@ export default function MapScreen() {
               <Text style={styles.calloutHeader}>{planNames[index]}</Text>
               <Text>{`Location: ${plans[index]?.location}`}</Text>
               <Text>{`Category: ${plans[index]?.category}`}</Text>
+              <Text>{`Notes: ${plans[index]?.notes}`}</Text>
             </Callout>
           </Marker>
         ))
       )}
 
+      {/* Current location marker */}
       {currentLoc && (
         <Marker
           coordinate={{

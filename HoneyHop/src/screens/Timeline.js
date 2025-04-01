@@ -148,7 +148,6 @@ export default function Timeline({ navigation }) {
         ))}
 
       <View style={styles.timelineEvent}>
-        <View style={styles.timelineLine} /> {/* Timeline line */}
           <View style={[styles.timelineIconContainer, styles.flight]}>
             <Hexagon />
             <View style={styles.iconContainer}>

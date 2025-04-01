@@ -33,8 +33,12 @@ export default function TripPlanner() {
   const [expandedFlight, setExpandedFlight] = useState(false);
   const [departureDate, setDepartureDate] = useState(new Date());
   const [departureTime, setDepartureTime] = useState(new Date());
+  const [returnDate, setReturnDate] = useState(new Date());
+  const [returnTime, setReturnTime] = useState(new Date());
   const [showDepartureDatePicker, setShowDepartureDatePicker] = useState(false);
   const [showDepartureTimePicker, setShowDepartureTimePicker] = useState(false);
+  const [showReturnDatePicker, setShowReturnDatePicker] = useState(false);
+  const [showReturnTimePicker, setShowReturnTimePicker] = useState(false);
   const [airline, setAirline] = useState('');
   const [fromAirport, setFromAirport] = useState('');
   const [toAirport, setToAirport] = useState('');
@@ -62,6 +66,8 @@ export default function TripPlanner() {
     setShowEndDatePicker(false);
     setShowDepartureDatePicker(false);
     setShowDepartureTimePicker(false);
+    setShowReturnDatePicker(false);
+    setShowReturnTimePicker(false);
     setShowCheckInDatePicker(false);
     setShowCheckInTimePicker(false);
     setShowCheckOutDatePicker(false);
@@ -91,6 +97,8 @@ export default function TripPlanner() {
         endDate,
         departureDate,
         departureTime,
+        returnDate,
+        returnTime,
         airline,
         fromAirport,
         toAirport,
@@ -287,6 +295,41 @@ export default function TripPlanner() {
                 mode="outlined"
                 style={styles.inputField}
               />
+
+              {/* Return Date */}
+              <TouchableOpacity onPress={() => setShowReturnDatePicker(true)} style={styles.dateInput}>
+                <Text>Return Date: {returnDate.toDateString()}</Text>
+              </TouchableOpacity>
+
+              {showReturnDatePicker && (
+                <DateTimePicker 
+                  value={returnDate} 
+                  mode="date" 
+                  display="default" 
+                  onChange={(event, selectedDate) => {
+                    if (selectedDate) setReturnDate(selectedDate);
+                    setShowReturnDatePicker(false);
+                  }} 
+                />
+              )}
+
+              {/* Return Time */}
+              <TouchableOpacity onPress={() => setShowReturnTimePicker(true)} style={styles.dateInput}>
+                <Text>Return Time: {returnTime.toLocaleTimeString()}</Text>
+              </TouchableOpacity>
+
+              {showReturnTimePicker && (
+                <DateTimePicker 
+                  value={returnTime} 
+                  mode="time" 
+                  display="default" 
+                  onChange={(event, selectedTime) => {
+                    if (selectedTime) setReturnTime(selectedTime);
+                    setShowReturnTimePicker(false);
+                  }} 
+                />
+              )}
+              
             </List.Accordion>
 
             {/* Accommodation Details Dropdown Section */}
