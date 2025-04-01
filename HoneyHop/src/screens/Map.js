@@ -24,6 +24,7 @@ export default function MapScreen() {
   const [accommodationCoordinates, setAccommodationCoordinates] = useState(null);
   const [planCoordinates, setPlanCoordinates] = useState([]);
   const [region, setRegion] = useState(null);
+  const [currentLoc, setCurrentLoc] = useState([]);
 
   // Loading states
   const [isCityLoading, setIsCityLoading] = useState(true);
@@ -40,29 +41,32 @@ export default function MapScreen() {
   useEffect(() => {
     fetchTripData();  // Flights, accommodation
     fetchPlans();     // Food, activity
-
-    /* 
-     * Gets device location
-     * This is a self-executing async function. It runs as soon as it's defined.
-     */
-    (async () => {
-      // Asks user for permission to access location
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      // In case the user denies access
-      if (status !== 'granted') {
-        console.log("Location permission granted.")
-        return;
-      } else {
-        console.log("Location permission denied.");
-      }
-
-      // Gets current longitude and latitude using expo-location library
-      // Note: Android Studio provides a mock location
-      let loc = await Location.getCurrentPositionAsync({});
-      console.log("Current location: ", loc);
-      
-    })();
   }, []);
+
+  // On first render, get current location and set it
+  useEffect(() => {
+    /* 
+    * Gets device location
+    * This is a self-executing async function. It runs as soon as it's defined.
+    */
+      (async () => {
+        // Asks user for permission to access location
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        // In case the user denies access
+        if (status !== 'granted') {
+          console.log("Location permission denied.")
+          return;
+        }
+  
+        console.log("Location permission granted.");
+  
+        // Gets current longitude and latitude using expo-location library
+        // Note: Android Studio provides a mock location
+        let loc = await Location.getCurrentPositionAsync({});
+        console.log("Current location: ", loc);
+        setCurrentLoc(loc);
+      })();
+  }, [])
 
   // Get city coordinates and set map region
   useEffect(() => {
@@ -87,7 +91,7 @@ export default function MapScreen() {
     };
 
     // Prevent unnecessary calls if region already set
-    if (!region && tripData?.tripName) {
+    if (tripData?.tripName) {
       fetchCoordinates();
     }
   }, [tripData]);
@@ -120,8 +124,8 @@ export default function MapScreen() {
       const fetchAndSetAccommodationCoords = async () => {
         const coordinates = await fetchAccommodationCoordinates();
         if (coordinates) {
+          console.log("Accommodation coordinates fetched: ", coordinates);
           setAccommodationCoordinates(coordinates);
-          console.log("Accommodation coordinates set: ", accommodationCoordinates);
           setIsAccommodationLoading(false);
           checkLoadingStates();
         } else {
@@ -139,8 +143,8 @@ export default function MapScreen() {
       const fetchAndSetPlanCoords = async () => {
         const coordinates = await fetchPlanCoordinates();
         if (coordinates.length > 0) {
+          console.log("Plan coordinates fetched: ", coordinates);
           setPlanCoordinates(coordinates);
-          console.log("Plan coordinates set: ", {planCoordinates});
           setIsPlansLoading(false);
           checkLoadingStates();
         } else {
@@ -160,12 +164,18 @@ export default function MapScreen() {
 
   // Set loading to false after all data is fetched
   const checkLoadingStates = () => {
-    // if (!isCityLoading && !isAirportLoading && !isAccommodationLoading && !isPlansLoading) {
-    //   setLoading(false);
-    // }
-    if (!isCityLoading && !isAirportLoading && !isAccommodationLoading) {
-      setLoading(false);
-    }
+    console.log("City loading: ", isCityLoading);
+    console.log("Airport loading: ", isAirportLoading);
+    console.log("Accommodation loading: ", isAccommodationLoading);
+    console.log("Plans loading: ", isPlansLoading);
+
+    // Read the current state using the callback form
+    setLoading(
+      !isCityLoading &&
+      !isAirportLoading &&
+      !isAccommodationLoading &&
+      !isPlansLoading
+    );
   };
 
   // Fetch coordinates from city name
@@ -302,7 +312,6 @@ export default function MapScreen() {
       // Get the object array from FireStore and put it into plans
       console.log("Plans fetched: ", newPlans);
       setPlans(newPlans);
-      console.log("Plans set: ", plans);
 
       // Get the plan name from each plan in the array and put it in planNames
       const names = newPlans.map((plan) => plan.activityTitle); 
@@ -318,6 +327,8 @@ export default function MapScreen() {
   }
 
   if (loading || !region) {
+    console.log ("Region state: ", region);
+    console.log("Loading state: ", loading);
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color='#000000' />
@@ -359,7 +370,7 @@ export default function MapScreen() {
             latitude: accommodationCoordinates.latitude,
             longitude: accommodationCoordinates.longitude,
           }}
-          title={accommodation} // Set the title for the marker (airport name)
+          title={accommodation} // Set the title for the marker (accommodation name)
         />
       )}
 
@@ -374,6 +385,16 @@ export default function MapScreen() {
             title={planNames[index]} // Use the title from the planNames array
           />
         ))
+      )}
+
+      {currentLoc && (
+        <Marker
+          coordinate={{
+            latitude: currentLoc.latitude,
+            longitude: currentLoc.longitude,
+          }}
+          title="Current Location"
+        />
       )}
       </MapView>
     </View>
