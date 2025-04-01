@@ -383,7 +383,7 @@ export default function TripPlanner() {
         </PaperButton>
         <PaperButton 
              mode="contained" 
-             onPress={() => navigation.navigate('Timeline')} 
+             onPress={() => navigation.navigate('TimelineMapTabs')} 
         style={styles.saveButton}
 >
          See Itinerary
