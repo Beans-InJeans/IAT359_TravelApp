@@ -3,16 +3,16 @@ import { Button as PaperButton } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 
 export default function Home({ navigation }) {
-  // Load fonts before rendering
+  //load brand font before rendering
   const [fontsLoaded] = useFonts({
     'BricolageGrotesque-ExtraBold': require('../../assets/fonts/BricolageGrotesque-ExtraBold.ttf'),
   });
 
-  if (!fontsLoaded) return null; // Prevent rendering before font loads
+  if (!fontsLoaded) return null; 
 
   return (
     <View style={styles.container}>
-      {/* Logo and Header in the same row */}
+      {/* style logo and header*/}
       <View style={styles.headerContainer}>
         <Image source={require('../../assets/HoneyHop-Logo.png')} style={styles.logo} />
         <Text style={styles.header}>HoneyHop</Text>
@@ -51,15 +51,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerContainer: {
-    flexDirection: 'row', // Aligns logo and text horizontally
-    alignItems: 'center', // Centers items vertically
+    flexDirection: 'row', 
+    alignItems: 'center', 
     marginBottom: 30,
   },
   logo: {
-    width: 50, // Adjust as needed
-    height: 50, // Adjust as needed
-    marginRight: 5, // Space between logo and text
-    resizeMode: 'contain', // Ensures the logo is not stretched
+    width: 50, 
+    height: 50, 
+    marginRight: 5, 
+    resizeMode: 'contain', 
   },
   header: {
     fontSize: 45,
