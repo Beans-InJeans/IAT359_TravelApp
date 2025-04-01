@@ -414,8 +414,8 @@ export default function MapScreen() {
       {currentLoc && (
         <Marker
           coordinate={{
-            latitude: currentLoc.latitude,
-            longitude: currentLoc.longitude,
+            latitude: currentLoc.coords.latitude,
+            longitude: currentLoc.coords.longitude,
           }}
           title="Current Location"
         />
