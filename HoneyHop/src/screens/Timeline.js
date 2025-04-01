@@ -89,21 +89,21 @@ export default function Timeline({ navigation }) {
     }
   }
 
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{tripData?.tripName || "Loading..."}</Text>
       <Text style={styles.dateRange}>{formatDate(tripData?.startDate)} - {formatDate(tripData?.endDate)}</Text>
   
       <ScrollView style={styles.timeline}>
-        {/* Departure Flight */}
         <View style={styles.timelineEvent}>
-        <View style={styles.timelineLine} /> {/* Timeline line */}
+          <View style={styles.timelineLine} />
           <View style={[styles.timelineIconContainer, styles.flight]}>
             <Hexagon />
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons name="airplane-takeoff" size={24} color="black" />
-            </View> {/* Closing the iconContainer View here */}
-          </View> {/* Closing the timelineIconContainer View here */}
+            </View>
+          </View>
           <View style={styles.eventContent}>
             <Text style={styles.eventTitle}>Departure Flight</Text>
             <Text style={styles.eventDate}>{formatDate(tripData?.departureDate)} {formatTime(tripData?.departureTime)}</Text>
@@ -113,15 +113,14 @@ export default function Timeline({ navigation }) {
           </View>
         </View>
   
-        {/* Hotel Check-In */}
         <View style={styles.timelineEvent}>
-        <View style={styles.timelineLine} /> {/* Timeline line */}
+          <View style={styles.timelineLine} />
           <View style={[styles.timelineIconContainer, styles.hotelCheckIn]}>
             <Hexagon />
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons name="bed" size={24} color="black" />
-            </View> {/* Closing the iconContainer View here */}
-          </View> {/* Closing the timelineIconContainer View here */}
+            </View>
+          </View>
           <View style={styles.eventContent}>
             <Text style={styles.eventTitle}>Check-In at {tripData?.accommodationName || "No Accommodation"}</Text>
             <Text style={styles.eventDate}>{formatDate(tripData?.checkInDate)} {formatTime(tripData?.checkInTime)}</Text>
@@ -129,16 +128,15 @@ export default function Timeline({ navigation }) {
           </View>
         </View>
   
-        {/* Activity */}
         {plans.map((plan) => (
           <View key={plan.id} style={styles.timelineEvent}>
-            <View style={styles.timelineLine} /> {/* Timeline line */}
+            <View style={styles.timelineLine} />
             <View style={[styles.timelineIconContainer, styles.activity]}>
               <Hexagon />
               <View style={styles.iconContainer}>
                 <MaterialCommunityIcons name={getPlanIcon(plan.category)} size={24} color="black" />
-              </View> {/* Closing the iconContainer View here */}
-            </View> {/* Closing the timelineIconContainer View here */}
+              </View>
+            </View>
             <View style={styles.eventContent}>
               <Text style={styles.eventTitle}>{plan.activityTitle}</Text>
               <Text style={styles.eventDate}>{formatDate(plan.date)} {formatTime(plan.time)}</Text>
@@ -146,14 +144,14 @@ export default function Timeline({ navigation }) {
             </View>
           </View>
         ))}
-
-      <View style={styles.timelineEvent}>
+  
+        <View style={styles.timelineEvent}>
           <View style={[styles.timelineIconContainer, styles.flight]}>
             <Hexagon />
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons name="airplane-takeoff" size={24} color="black" />
-            </View> {/* Closing the iconContainer View here */}
-          </View> {/* Closing the timelineIconContainer View here */}
+            </View>
+          </View>
           <View style={styles.eventContent}>
             <Text style={styles.eventTitle}>Return Flight</Text>
             <Text style={styles.eventDate}>{formatDate(tripData?.returnDate)} {formatTime(tripData?.returnTime)}</Text>
@@ -169,6 +167,7 @@ export default function Timeline({ navigation }) {
       </TouchableOpacity>
     </View>
   );
+    
 }  
 
 const styles = StyleSheet.create({
