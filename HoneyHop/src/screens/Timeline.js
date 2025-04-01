@@ -146,6 +146,23 @@ export default function Timeline({ navigation }) {
             </View>
           </View>
         ))}
+
+      <View style={styles.timelineEvent}>
+        <View style={styles.timelineLine} /> {/* Timeline line */}
+          <View style={[styles.timelineIconContainer, styles.flight]}>
+            <Hexagon />
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name="airplane-takeoff" size={24} color="black" />
+            </View> {/* Closing the iconContainer View here */}
+          </View> {/* Closing the timelineIconContainer View here */}
+          <View style={styles.eventContent}>
+            <Text style={styles.eventTitle}>Return Flight</Text>
+            <Text style={styles.eventDate}>{formatDate(tripData?.returnDate)} {formatTime(tripData?.returnTime)}</Text>
+            {tripData?.airline && (
+              <Text style={styles.eventDescription}>{tripData.airline} from {tripData.toAirport} to {tripData.fromAirport}</Text>
+            )}
+          </View>
+        </View>
   
         {/* Optional Map Button */}
         {/* <TouchableOpacity 

@@ -337,6 +337,8 @@ export default function MapScreen() {
   if (loading || !region) {
     console.log ("Region state: ", region);
     console.log("Loading state: ", loading);
+    console.log("Trip data: ", tripData);
+    console.log("Plan data:", plans);
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color='#000000' />
@@ -369,7 +371,12 @@ export default function MapScreen() {
             longitude: airportCoordinates.longitude,
           }}
           title={airport} // Set the title for the marker (airport name)
-        />
+        >
+          <Callout>
+            <Text style={styles.calloutHeader}>{airport}</Text>
+            <Text>{`Arrival date: ${formatDate(tripData?.departureDate)}`}</Text>
+          </Callout>
+        </Marker>
       )}
 
       {accommodationCoordinates && (
@@ -398,7 +405,13 @@ export default function MapScreen() {
               longitude: coords.longitude,
             }}
             title={planNames[index]} // Use the title from the planNames array
-          />
+          >
+            <Callout>
+              <Text style={styles.calloutHeader}>{planNames[index]}</Text>
+              <Text>{`Location: ${plans[index]?.location}`}</Text>
+              <Text>{`Category: ${plans[index]?.category}`}</Text>
+            </Callout>
+          </Marker>
         ))
       )}
 
