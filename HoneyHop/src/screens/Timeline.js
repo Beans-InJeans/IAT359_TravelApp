@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; // Importing MaterialCommunityIcons
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { firebase_auth, db } from '../firebaseConfig';
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
 import Svg, { Polygon } from 'react-native-svg';
@@ -54,11 +54,11 @@ export default function Timeline({ navigation }) {
     const plansCollectionRef = collection(doc(db, "users", user.uid), "plans");
     onSnapshot(plansCollectionRef, (snapshot) => {
       const newPlans = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      // Sort plans by date before setting them to state
+      //sort plans by date before setting them to state
       const sortedPlans = newPlans.sort((a, b) => {
         const dateA = new Date(a.date.seconds * 1000 || a.date);
         const dateB = new Date(b.date.seconds * 1000 || b.date);
-        return dateA - dateB; // Sort in ascending order (chronologically)
+        return dateA - dateB; //sort in ascending order (chronologically)
       });
       setPlans(sortedPlans);
     });
@@ -81,11 +81,11 @@ export default function Timeline({ navigation }) {
   function getPlanIcon(category) {
     switch (category) {
       case "food":
-        return "food-fork-drink"; // Correct icon for Food category
+        return "food-fork-drink"; //correct icon for Food category
       case "activity":
-        return "run"; // Correct icon for Activity category
+        return "run"; //correct icon for Activity category
       default:
-        return "calendar"; // Default icon for other categories
+        return "calendar"; //default icon for other categories
     }
   }
 
@@ -198,7 +198,6 @@ const styles = StyleSheet.create({
   timelineIconContainer: {
     width: 40,
     height: 40,
-    //borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
@@ -208,8 +207,6 @@ const styles = StyleSheet.create({
   eventContent: {
     marginLeft: 50,
     paddingLeft: 10,
-    //borderLeftWidth: 2,
-    //borderLeftColor: '#ddd',
     paddingTop: 10,
   },
   eventTitle: {
@@ -242,19 +239,18 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   iconContainer: {
-    position: 'absolute', // Position the icon inside the hexagon
+    position: 'absolute', 
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1, // Ensure the icon is above the hexagon
+    zIndex: 1, 
   },
   timelineLine: {
-    width: 4, // Width of the line
-    height: '140%', // Full height between the events
-    backgroundColor: 'black', // Black color for the line
+    width: 4, 
+    height: '140%',
+    backgroundColor: 'black', 
     position: 'absolute',
-    top: 40, // Adjust the top to start from the center of the hexagon
+    top: 40, 
     left: '5%',
-    //transform: [{ translateX: -1 }], // Center the line
-    zIndex: 0, // Make sure it’s under the icon
+    zIndex: 0, 
   },  
 });
